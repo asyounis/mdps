@@ -204,6 +204,26 @@
         <hr />
       </div>
 
+
+      <div class="parent-video-compare-container">
+        <img src="./resources/images/mapillary_panel_seq_001.png" class="interpolation-image" alt="mapillary_panel_seq_001"/>
+        <p class="justified">
+          Example trajectories from the Mapillary Geo-Location (MGL) dataset with observations shown in the top row. We show the
+          current true state and state history (black arrow and black line), the estimated posterior density of the current state
+          (red cloud, with darker being higher probability) and the top 3 extracted modes (blue arrows) for the our MDPS as
+          well as its forward and backward MDPFs. Due to ambiguity at early time-steps, MDPF is unable to resolve
+          the correct intersection, and instead places probability mass at multiple intersections. By fusing both forward and
+          backward filters, our MDPS resolves this ambiguity with probability mass focused on the correct intersection.
+          Furthermore, MDPS provides a tighter posterior density than either MDPF-Forward or MDPF-Backward.
+        </p>
+      </div>
+
+
+      <div class="parent-video-compare-container">
+        <hr />
+      </div>
+
+
       <div class="parent-video-compare-container">
         <h2 class="title">BibTeX</h2>
         <pre><code>
