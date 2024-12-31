@@ -5,9 +5,9 @@ body {
 }
 
 .tbl_video {
-    position: relative;
+    position: absolute;
     width: 80%;
-    margin: 0 auto;
+    margin: 0;
     text-align: center;
 }
 
