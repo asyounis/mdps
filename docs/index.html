@@ -1,0 +1,240 @@
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="./resources/css/bulma.min.css" />
+    <link rel="stylesheet" href="./resources/css/slide.css" />
+    <link rel="stylesheet" href="./resources/css/bulma-carousel.min.css" />
+    <link rel="stylesheet" href="./resources/css/bulma-slider.min.css" />
+    <link rel="stylesheet" href="./resources/css/fontawesome.all.min.css" />
+    <link rel="stylesheet" href="./resources/css/carasoul.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css"
+    />
+    <link rel="stylesheet" href="./resources/css/index.css" />
+    <link rel="icon" href="./resources/images/favicon.svg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./resources/css/style.css"
+      media="screen"
+    />
+    <link rel="stylesheet" href="resources/css/dics.original.css" />
+
+    <title>Learning to be Smooth: An End-to-End Differentiable Particle Smoother</title>
+    
+    <meta
+      property="og:title"
+      content="Learning to be Smooth: An End-to-End Differentiable Particle Smoother"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      body {
+        text-align: center;
+        background-color: #f0f0f0; /* Optional: Set a background color for better visibility */
+      }
+      .larger-arrow {
+        font-size: 2em; /* Adjust the font size as needed */
+        letter-spacing: 4em; /* Adjust the letter spacing as needed */
+        display: inline-block; /* Ensures text-align works */
+      }
+      .tbl video {
+        margin-bottom: 40px;
+      }
+    </style>
+    <script src="resources/js/video_comparison.js"></script>
+    <script src="resources/js/dics.original.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="title">Learning to be Smooth:<br>An End-to-End Differentiable Particle Smoother</div>
+      <br>
+      <div class="title">Neurips 2024</div>
+
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://asyounis.github.io/">Ali Younis</a
+                >,</span
+              >
+              <span class="author-block">
+                <a href="https://ics.uci.edu/~sudderth/"> Erik Sudderth</a></span
+              >
+            <br>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">University of California, Irvine</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column has-text-centered">
+        <div class="publication-links">
+          <!-- Paper Link. -->
+          <span class="link-block">
+            <!-- <a href="https://arxiv.org/abs/2404.09591" class="external-link button is-normal is-rounded is-dark"> -->
+            <a href="https://asyounis.github.io/assets/neurips_2024_paper/paper.pdf" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fa fa-file-o"></i>
+              </span>
+              <span>Paper</span>
+            </a>
+          </span>
+          <span class="link-block">
+            <a href="https://arxiv.org/abs/COMINGSOON" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fa fa-file-o"></i>
+              </span>
+              <span>arXiv</span>
+            </a>
+          </span>
+          <span class="link-block">
+            <a href="https://asyounis.github.io/assets/neurips_2024_paper/poster.pdf" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fa fa-file-o"></i>
+              </span>
+              <span>Poster</span>
+            </a>
+          </span>
+          <span class="link-block">
+            <!-- <a href="https://arxiv.org/abs/2404.09591" class="external-link button is-normal is-rounded is-dark"> -->
+            <a href="https://neurips.cc/virtual/2024/poster/94821" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fa fa-file-o"></i>
+              </span>
+              <span>Video</span>
+            </a>
+          </span>
+          <!-- Code Link. -->
+          <span class="link-block">
+            <a href="https://github.com/asyounis/mdps" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <svg
+                  class="svg-inline--fa fa-github fa-w-16"
+                  aria-hidden="true"
+                  focusable="false"
+                  data-prefix="fab"
+                  data-icon="github"
+                  role="img"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 496 512"
+                  data-fa-i2svg=""
+                >
+                  <path
+                    fill="currentColor"
+                    d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
+                  ></path></svg
+                ><!-- <i class="fab fa-github"></i> Font Awesome fontawesome.com -->
+              </span>
+              <span>Code</span>
+            </a>
+          </span>
+        </div>
+      </div>
+
+      <div class="parent-video-compare-container">
+        <table class="tbl_video" style="width:60%;">
+          <tr>
+            <td colspan="1" style="width:20%">
+              <video class="kitti360" id="00" preload="auto" playsinline webkit-playsinline loop autoplay muted>
+                <source src="resources/videos/seq_0001.mp4" type="video/mp4" />
+              </video>
+            </td>
+            <td colspan="1" style="width:20%">
+              <video class="kitti360" id="00" preload="auto" playsinline webkit-playsinline loop autoplay muted>
+                <source src="resources/videos/seq_0027.mp4" type="video/mp4" />
+              </video>
+            </td>
+            <td colspan="1" style="width:16.85%">
+              <video class="kitti360" id="00" preload="auto" playsinline webkit-playsinline loop autoplay muted>
+                <source src="resources/videos/seq_0050.mp4" type="video/mp4" />
+              </video>
+            </td>
+            <td colspan="1" style="width:16.85%">
+              <video class="kitti360" id="00" preload="auto" playsinline webkit-playsinline loop autoplay muted>
+                <source src="resources/videos/seq_0064.mp4" type="video/mp4" />
+              </video>
+            </td>
+          </tr>
+        </table>
+        <p class="justified">
+          Examples of state estimation in city scale environments for our method,
+          <string>Mixture Density Particle Smoother</strong> (bottom) which 
+          combines the output of a forward and a backward in time Mixture Density 
+          Particle Filter (MDPF, middle rows).  Our method is more accurate than 
+          either the forward of backward MDPF and is able to maintain accurate 
+          tracking even when there is ambiguity in the state space.
+        </p>
+      </div>
+
+      <div class="parent-video-compare-container">
+        <hr />
+      </div>
+
+      <h1>Abstract</h1>
+      <div class="container is-max-desktop content">
+        <p class="justified">
+          For challenging state estimation problems arising in domains like vision 
+          and robotics, particle-based representations attractively enable temporal 
+          reasoning about multiple posterior modes. Particle smoothers offer the 
+          potential for more accurate offline data analysis by propagating information 
+          both forward and backward in time, but have classically required human-engineered 
+          dynamics and observation models. Extending recent advances in discriminative 
+          training of particle filters, we develop a framework for low-variance 
+          propagation of gradients across long time sequences when training particle 
+          smoothers. Our “two-filter” smoother integrates particle streams that 
+          are propagated forward and backward in time, while incorporating stratification 
+          and importance weights in the resampling step to provide low-variance 
+          gradient estimates for neural network dynamics and observation models. 
+          The resulting mixture density particle smoother is substantially more 
+          accurate than state-of-the-art particle filters, as well as search-based 
+          baselines, for city-scale global vehicle localization from real-world 
+          videos and maps.
+        </p>
+      </div>
+
+       <div class="parent-video-compare-container">
+        <hr />
+      </div>
+
+
+      <div class="parent-video-compare-container">
+        <img src="./resources/images/mapillary_panel_seq_001.png" class="interpolation-image" alt="mapillary_panel_seq_001"/>
+        <p class="justified">
+          Example trajectories from the Mapillary Geo-Location (MGL) dataset with observations shown in the top row. We show the
+          current true state and state history (black arrow and black line), the estimated posterior density of the current state
+          (red cloud, with darker being higher probability) and the top 3 extracted modes (blue arrows) for the our MDPS as
+          well as its forward and backward MDPFs. Due to ambiguity at early time-steps, MDPF is unable to resolve
+          the correct intersection, and instead places probability mass at multiple intersections. By fusing both forward and
+          backward filters, our MDPS resolves this ambiguity with probability mass focused on the correct intersection.
+          Furthermore, MDPS provides a tighter posterior density than either MDPF-Forward or MDPF-Backward.
+        </p>
+      </div>
+
+
+      <div class="parent-video-compare-container">
+        <hr />
+      </div>
+
+
+      <div class="parent-video-compare-container">
+        <h2 class="title">BibTeX</h2>
+        <pre><code>
+@article{younis2024mdps,
+      author    = {Younis, Ali and Sudderth, Erik},
+      title     = {Learning to be Smooth: An End-to-End Differentiable Particle Smoother},
+      journal   = {Neurips},
+      year      = {2024},
+}</code></pre>
+      </div>
+    <br>
+    <br>
+  </body>
+</html>
