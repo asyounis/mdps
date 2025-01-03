@@ -56,7 +56,7 @@ cd ./experiments/bearings_only/mdps_strat/
 #### Bearings Only
 
 Below is a mapping between the name of each method used in the paper and the directory in which the config file and run script are placed.
-| Paper Method Name          | Directory Name (in `./experiments/bearings_only`)      |
+| Method Name in Paper       | Directory Name (in `./experiments/bearings_only`)      |
 |----------------------------|--------------------------------------------------------|
 | TG-PF (Multinomial)        | mdpf_forward_truncated_gradient_resampling_multinomial |
 | TG-PF (Stratified)         | mdpf_forward_truncated_gradient_resampling_stratified  |
@@ -71,8 +71,26 @@ Below is a mapping between the name of each method used in the paper and the dir
 
 #### Mapillary Geo-Location
 
-#### Kitti
+Below is a mapping between the name of each method used in the paper and the directory in which the config file and run script are placed.
+| Method Name in Paper     | Directory Name (in `./experiments/mapillary`) |
+|--------------------------|-----------------------------------------------|
+| MDPF                     | mdpf_forward                                  |
+| MDPS                     | mdps_strat                                    |
+| Dense Search             | orienternet                                   |
+| Retrieval (Sliding Win.) | embedding_maps_and_images                     |
+| Retrieval (PF)           | gaussian_dynamics_pf                          |
 
+#### KITTI
+**Note: KITTI uses the output of the Mapillary training as a starting point and you must first run the Mapillary experiments**
+
+Below is a mapping between the name of each method used in the paper and the directory in which the config file and run script are placed.
+| Method Name in Paper     | Directory Name (in `./experiments/kitti`) |
+|--------------------------|-----------------------------------------------|
+| MDPF                     | mdpf_forward                                  |
+| MDPS                     | mdps_strat                                    |
+| Dense Search             | orienternet                                   |
+| Retrieval (Sliding Win.) | embedding_maps_and_images                     |
+| Retrieval (PF)           | gaussian_dynamics_pf                          |
 
 ## Plotting
 
