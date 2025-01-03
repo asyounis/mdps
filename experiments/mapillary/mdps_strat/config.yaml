@@ -200,21 +200,21 @@ experiment_templates_import:
 experiments:
 
   - Training_Filters_Stage_1:
-      do_run: False
+      do_run: True
       templates_to_use: ["Training_Template", "MDPS_Training_Filters_Base_Template", "MDPS_Training_Filters_Stage_1_Template"]
 
 
   - Training_Filters_Stage_2:
-      do_run: False
+      do_run: True
       templates_to_use: ["Training_Template", "MDPS_Training_Filters_Base_Template", "MDPS_Training_Filters_Stage_2_Template"]
 
 
   - Training_Weights:
-      do_run: False 
+      do_run: True 
       templates_to_use: ["Training_Template", "MDPS_Training_Weights_Template"]
 
   - Training_All:
-      do_run: False 
+      do_run: True 
       templates_to_use: ["Training_Template", "MDPS_Training_all_Template"]
 
 
@@ -224,7 +224,7 @@ experiments:
 
 
   - 001_Evaluation_Filters_Stage_1:
-      do_run: False
+      do_run: True
 
       templates_to_use: ["Evaluation_Template", "MDPS_Evaluation_Template"]
       save_dir: <root_save_dir>/001_evaluation_filters_stage_1/
@@ -234,7 +234,7 @@ experiments:
 
 
   - 002_Evaluation_Filters_Stage_2:
-      do_run: False
+      do_run: True
 
       templates_to_use: ["Evaluation_Template", "MDPS_Evaluation_Template"]
       save_dir: <root_save_dir>/002_evaluation_filters_stage_2/
@@ -244,7 +244,7 @@ experiments:
 
 
   - 003_Evaluation_Weights:
-      do_run: False
+      do_run: True
 
       templates_to_use: ["Evaluation_Template", "MDPS_Evaluation_Template"]
       save_dir: <root_save_dir>/003_evaluation_weights/

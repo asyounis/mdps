@@ -81,7 +81,7 @@ experiment_templates:
         qualitative_config:
 
           # If we should run the qualitative
-          do_run: False
+          do_run: True
 
           save_model_input_output_for_rendering_config:
             do_save: True

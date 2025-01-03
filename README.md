@@ -33,10 +33,48 @@ To run the evaluation and training, install the requirements:
 python -m pip install -r requirements.txt
 ```
 
-## Training
+## Dataset Download and Preparation
 
-## Evaluation
+#### Bearings Only
+Bearings only dataset is a synthetic dataset that is created when any of the bearings only experiments is run for the first time.  As such please only run 1 bearings only experiment at first and once the dataset is generated and saved it is safe to run multiple bearings only jobs in parallel.
 
+#### Mapillary Geo-Location
+
+#### Kitti
+
+
+## Training And Evaluation
+All experiment configs and run scripts are contained in `./experiments/`. There are sub-directories for each dataset type.  To run an experiment navigate to that experiments directory and execute the run script. Running an experiment will result in training and evaluation of the method. Enabling or disabling training or evaluation (as well as changes to the experiment settings) can be done by editing that experiments `config.yaml` file.
+For example, to run the training and evaluation of MDPS for bearings only:
+```
+cd ./experiments/bearings_only/mdps_strat/
+./run.bash
+```
+**Note:** you must navigate to the directory before using the run script.
+
+
+#### Bearings Only
+
+Below is a mapping between the name of each method used in the paper and the directory in which the config file and run script are placed.
+| Paper Method Name          | Directory Name (in `./experiments/bearings_only`)      |
+|----------------------------|--------------------------------------------------------|
+| TG-PF (Multinomial)        | mdpf_forward_truncated_gradient_resampling_multinomial |
+| TG-PF (Stratified)         | mdpf_forward_truncated_gradient_resampling_stratified  |
+| SR-PF (Multinomial)        | mdpf_forward_discrete_soft_resampling_multinomial      |
+| SR-PF (Stratified)         | mdpf_forward_discrete_soft_resampling_stratified       |
+| MDPF (Multinomial)         | mdpf_forward_multinomial                               |
+| MDPF (Stratified)          | mdpf_forward_stratified                                |
+| MDPF (Residual)            | mdpf_forward_multinomial                               |
+| MDPF-Backward (Stratified) | mdpf_backward_stratified                               |
+| FFBS (Multinomial)         | traditional_FFBS                                       |
+| MDPS (Stratified)          | mdps_strat                                             |
+
+#### Mapillary Geo-Location
+
+#### Kitti
+
+
+## Plotting
 
 
 

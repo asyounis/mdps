@@ -73,7 +73,7 @@ experiments:
   - Training:
 
       # If we should run this experiment or not
-      do_run: False
+      do_run: True
 
       # Specify which model to load
       # We want to load from the mapillary saved files

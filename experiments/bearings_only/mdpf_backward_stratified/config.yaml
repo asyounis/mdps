@@ -123,7 +123,7 @@ experiments:
   - Training_Stage_1:
 
       # If we should run this experiment or not
-      do_run: False 
+      do_run: True 
 
       # What templates to load for this experiment
       templates_to_use: ["Training_Template", "MDPF_Training_Template_Base","MDPF_Training_Template_Stage_1"]
@@ -132,7 +132,7 @@ experiments:
   - Training_Stage_2:
 
       # If we should run this experiment or not
-      do_run: False
+      do_run: True
 
       # What templates to load for this experiment
       templates_to_use: ["Training_Template", "MDPF_Training_Template_Base","MDPF_Training_Template_Stage_2"]

@@ -106,6 +106,6 @@ experiment_templates:
         num_cpu_cores_for_dataloader: 32
 
         # quantitative_config:
-        #   do_run: False
+        #   do_run: True
         #   batch_sizes: 
         #     evaluation: 8

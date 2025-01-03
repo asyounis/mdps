@@ -48,7 +48,7 @@ experiments:
   - Training:
 
       # If we should run this experiment or not
-      do_run: False
+      do_run: True
 
       # What templates to load for this experiment
       templates_to_use: ["Training_Template"]
@@ -133,7 +133,7 @@ experiments:
   - Evaluation_Map_Centering:
 
       # If we should run this experiment or not
-      do_run: False
+      do_run: True
 
       # What templates to load for this experiment
       templates_to_use: ["Evaluation_Template", "Discrete_Methods_Evaluation_base"]

@@ -113,7 +113,7 @@ experiment_templates:
         num_cpu_cores_for_dataloader: 8
 
         qualitative_config:
-          do_run: False
+          do_run: True
 
           number_to_render: 5
 

@@ -55,7 +55,7 @@ experiments:
         map_encoder_model: <mapillary_root_save_dir>/001_training/<framework_var_run_number>/models/best/map_encoder_model.pt
 
       # If we should run this experiment or not
-      do_run: False
+      do_run: True
 
       # What templates to load for this experiment
       templates_to_use: ["Training_Template"]
@@ -113,7 +113,7 @@ experiments:
         full_model: <root_save_dir>/000_training_obs_encoder/<framework_var_run_number>/models/best/full_model.pt
 
       # If we should run this experiment or not
-      do_run: False
+      do_run: True
 
       # What templates to load for this experiment
       templates_to_use: ["Training_Template"]

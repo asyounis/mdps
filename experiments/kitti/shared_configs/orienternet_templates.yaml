@@ -28,7 +28,7 @@ experiment_templates:
         num_cpu_cores_for_dataloader: 16
 
         # qualitative_config:
-        #   do_run: False
+        #   do_run: True
         #   number_to_render: 1
 
         #   # We do not have a KDE so we dont want to render a posterior KDE
@@ -41,7 +41,7 @@ experiment_templates:
         qualitative_config:
 
           # If we should run the qualitative
-          do_run: False
+          do_run: True
 
           save_model_input_output_for_rendering_config:
             do_save: True
