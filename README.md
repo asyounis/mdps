@@ -52,7 +52,6 @@ cd ./experiments/bearings_only/mdps_strat/
 ```
 **Note:** you must navigate to the directory before using the run script.
 
-
 #### Bearings Only
 
 Below is a mapping between the name of each method used in the paper and the directory in which the config file and run script are placed.
@@ -93,7 +92,7 @@ Below is a mapping between the name of each method used in the paper and the dir
 | Retrieval (PF)           | gaussian_dynamics_pf                          |
 
 ## Plotting
-
+We provide the plotting tools for plotting
 
 
 
