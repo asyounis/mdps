@@ -14,7 +14,7 @@
   <div align="center"></div>
 </p>
 <p align="center">
-    <a href="https://asyounis.github.io/mdps/"><img src="assets/images/cover.png" alt="cover_img" width="60%"></a>
+    <a href="https://asyounis.github.io/mdps/"><img src="assets/images/cover.png" alt="cover_img" width="100%"></a>
     <br>
     <em>Mixture Density Particles Smoother is an end-to-end differentiable particle smoother which uses learned dynamics and measurement models (neural networks), trained end-to-end within the particle smoother algorithm.
 </p>
