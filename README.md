@@ -25,6 +25,14 @@ This repository hosts the source code for "Learning to be Smooth: An End-to-End 
 
 ## Installation
 
+This repo requires Python >= 3.10 and [PyTorch](https://pytorch.org/).  We have exported the python environment using "pip3 freeze" and provided it in requirements.txt.
+
+To run the evaluation and training, install the requirements:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
 ## Training
 
 ## Evaluation
