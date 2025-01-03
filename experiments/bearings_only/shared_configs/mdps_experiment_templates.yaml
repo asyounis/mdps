@@ -1,0 +1,470 @@
+experiment_templates:
+
+
+  - MDPS_Training_Filters_Base_Template:
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs: 
+          name: CombinedMetric
+
+          metric_configs:
+            - metric_forward:
+                name: KDENLLMetric
+                alpha: 0.5
+                output_keys:
+                  particles: "forward_particles"
+                  particle_weights: "forward_particle_weights"
+                  bandwidths: "forward_bandwidths"
+
+                particle_extract_dim_params:
+                  0: 
+                    dim_in_kde: 0
+                    kde_distribution_type: "Normal"
+                  1: 
+                    dim_in_kde: 1
+                    kde_distribution_type: "Normal"
+                  2: 
+                    dim_in_kde: 2
+                    kde_distribution_type: "VonMises"
+
+            - metric_backward:
+                name: KDENLLMetric
+                alpha: 0.5
+                output_keys:
+                  particles: "backward_particles"
+                  particle_weights: "backward_particle_weights"
+                  bandwidths: "backward_bandwidths"
+
+                particle_extract_dim_params:
+                  0: 
+                    dim_in_kde: 0
+                    kde_distribution_type: "Normal"
+                  1: 
+                    dim_in_kde: 1
+                    kde_distribution_type: "Normal"
+                  2: 
+                    dim_in_kde: 2
+                    kde_distribution_type: "VonMises"
+
+
+
+
+  - MDPS_Training_Filters_Stage_1_Template:
+
+      # The save dir
+      save_dir: <root_save_dir>/001_training_filters_stage_1/
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          forward_output_bandwidth_model:       "freeze"
+          backward_output_bandwidth_model:      "freeze"
+          output_bandwidth_model:               "freeze"
+          output_weights_model:                 "freeze"
+
+          forward_resampling_bandwidth_model:   0.00001
+          backward_resampling_bandwidth_model:  0.00001
+          
+          forward_dynamics_model:               0.001
+          backward_dynamics_model:              0.001
+          forward_output_weights_model:         0.001
+          backward_output_weights_model:        0.001
+          forward_resampling_weights_model:     0.001
+          backward_resampling_weights_model:    0.001
+          
+          observation_encoder_model:            0.001
+
+
+
+  - MDPS_Training_Filters_Stage_2_Template:
+    
+      # The save dir
+      save_dir: <root_save_dir>/002_training_filters_stage_2/
+
+      # Specify which model to load
+      pretrained_models:
+        full_model: <root_save_dir>/001_training_filters_stage_1/<framework_var_run_number>/models/best/full_model.pt
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          forward_output_bandwidth_model:       0.001
+          backward_output_bandwidth_model:      0.001
+          forward_resampling_bandwidth_model:   "freeze"
+          backward_resampling_bandwidth_model:  "freeze"
+          output_bandwidth_model:               "freeze"
+          forward_dynamics_model:               "freeze"
+          backward_dynamics_model:              "freeze"
+          forward_output_weights_model:         "freeze"
+          backward_output_weights_model:        "freeze"
+          forward_resampling_weights_model:     "freeze"
+          backward_resampling_weights_model:    "freeze"
+          output_weights_model:                 "freeze"
+          observation_encoder_model:            "freeze"
+
+        models_with_disabled_gradients:
+          - observation_encoder_model
+          - forward_resampling_bandwidth_model
+          - backward_resampling_bandwidth_model
+          - output_bandwidth_model
+          - forward_dynamics_model
+          - backward_dynamics_model
+          - forward_output_weights_model
+          - backward_output_weights_model
+          - forward_resampling_weights_model
+          - backward_resampling_weights_model
+          - output_weights_model
+
+
+
+  - MDPS_Training_Weights_Template:
+
+      # The save dir
+      save_dir: <root_save_dir>/003_training_weights/
+
+
+      # Specify which model to load
+      pretrained_models:
+        full_model: <root_save_dir>/002_training_filters_stage_2/<framework_var_run_number>/models/best/full_model.pt
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          forward_output_bandwidth_model:       "freeze"
+          backward_output_bandwidth_model:      "freeze"
+          forward_resampling_bandwidth_model:   "freeze"
+          backward_resampling_bandwidth_model:  "freeze"
+          forward_dynamics_model:               "freeze"
+          backward_dynamics_model:              "freeze"
+          forward_output_weights_model:         "freeze"
+          backward_output_weights_model:        "freeze"
+          forward_resampling_weights_model:     "freeze"
+          backward_resampling_weights_model:    "freeze"
+          observation_encoder_model:            "freeze"
+
+          output_weights_model:                 0.001
+          output_bandwidth_model:               0.0001
+
+        models_with_disabled_gradients:
+          - observation_encoder_model
+          - forward_output_bandwidth_model
+          - backward_output_bandwidth_model
+          - forward_resampling_bandwidth_model
+          - backward_resampling_bandwidth_model
+          - forward_dynamics_model
+          - backward_dynamics_model
+          - forward_output_weights_model
+          - backward_output_weights_model
+          - forward_resampling_weights_model
+          - backward_resampling_weights_model
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs: 
+          name: KDENLLMetric
+          output_keys:
+            particles: "particles"
+            particle_weights: "particle_weights"
+            bandwidths: "bandwidths"
+
+          particle_extract_dim_params:
+            0: 
+              dim_in_kde: 0
+              kde_distribution_type: "Normal"
+            1: 
+              dim_in_kde: 1
+              kde_distribution_type: "Normal"
+            2: 
+              dim_in_kde: 2
+              kde_distribution_type: "VonMises"
+
+
+
+
+  - MDPS_Training_All_Template:
+
+      # The save dir
+      save_dir: <root_save_dir>/004_training_all/
+
+
+      # Specify which model to load
+      pretrained_models:
+        full_model: <root_save_dir>/003_training_weights/<framework_var_run_number>/models/best/full_model.pt
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          forward_output_bandwidth_model:       "freeze"
+          backward_output_bandwidth_model:      "freeze"
+          forward_resampling_bandwidth_model:   0.00001
+          backward_resampling_bandwidth_model:  0.00001
+          
+          forward_dynamics_model:               0.0001
+          backward_dynamics_model:              0.0001
+          forward_output_weights_model:         0.0001
+          backward_output_weights_model:        0.0001
+          forward_resampling_weights_model:     0.0001
+          backward_resampling_weights_model:    0.0001
+          observation_encoder_model:            0.0001
+
+          output_weights_model:                 0.0001
+          output_bandwidth_model:               0.00001
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs: 
+          name: KDENLLMetric
+          output_keys:
+            particles: "particles"
+            particle_weights: "particle_weights"
+            bandwidths: "bandwidths"
+
+          particle_extract_dim_params:
+            0: 
+              dim_in_kde: 0
+              kde_distribution_type: "Normal"
+            1: 
+              dim_in_kde: 1
+              kde_distribution_type: "Normal"
+            2: 
+              dim_in_kde: 2
+              kde_distribution_type: "VonMises"
+
+
+
+
+  - MDPS_Evaluation_Template:
+
+      evaluation_configs:     
+
+        # The configs for the qualitative phase
+        qualitative_config:
+
+          # If we should run the qualitative
+          do_run: True
+
+          save_model_input_output_for_rendering_config:
+            do_save: True
+            number_to_save: 5
+
+
+          # The configs for the dynamics model propagation renderings
+          # This is the rendering that shows how the dynamics model works
+          save_model_input_output_dynamics_model_propagation_config:
+
+            # If we should even render the sequences
+            do_save: True
+
+            # How many sequences to render
+            number_to_save: 5
+
+            # The name of the model to use as the dynamics model
+            dynamics_model_name: "forward_dynamics_model"
+
+            # Get the direction to propagate.
+            # This can either be forward or backward
+            direction: "forward"
+
+            # The number of samples to draw from the dynamics model to generate the 
+            # new position cloud
+            number_of_samples: 250
+
+
+
+
+
+
+          # The configs for the sequence renderings
+          sequence_rendering_config:
+
+            # If we should even render the sequences
+            do_render: False
+
+            # How many sequences to render
+            number_to_render: 10
+
+            # The Configs for rendering the XY KDE for the sequence rendering
+            xy_kde_posterior_rendering_configs:
+
+              # Of we should render the KDE
+              do_render: True
+
+              # What dimes to extract for rendering the KDE
+              # and the distribution to use when rendering for each dim
+              particle_extract_dim_params:
+                0: 
+                  dim_in_kde: 0
+                  kde_distribution_type: "Normal"
+                1: 
+                  dim_in_kde: 1
+                  kde_distribution_type: "Normal"
+
+            # The configs to use while rendering the angle dims KDE
+            angle_kde_posterior_rendering_configs:
+              
+              # If we should even render the KDE
+              do_render: True
+
+              # What dimes to extract for rendering the KDE
+              # and the distribution to use when rendering for each dim
+              particle_extract_dim_params:
+                2: 
+                  dim_in_kde: 0
+                  kde_distribution_type: "VonMises"
+
+          # The configs for the dynamics model propagation renderings
+          # This is the rendering that shows how the dynamics model works
+          dynamics_model_propagation_rendering_config:
+
+            # If we should even render the sequences
+            do_render: False
+
+            # How many sequences to render
+            number_to_render: 5
+
+            # The name of the model to use as the dynamics model
+            dynamics_model_name: "dynamics_model"
+
+            # Get the direction to propagate.
+            # This can either be forward or backward
+            direction: "forward"
+
+            # The number of samples to draw from the dynamics model to generate the 
+            # new position cloud
+            number_of_samples: 25
+
+            # The figure renderings number of rows and columns
+            rows: 4
+            cols: 5
+
+
+
+
+
+        quantitative_config:
+          metric_configs:
+
+            mdps_nll:
+              type: kde_nll
+              output_keys:
+                particles: "particles"
+                particle_weights: "particle_weights"
+                bandwidths: "bandwidths"
+              particle_extract_dim_params:
+                0: 
+                  dim_in_kde: 0
+                  kde_distribution_type: "Normal"
+                1: 
+                  dim_in_kde: 1
+                  kde_distribution_type: "Normal"
+                2: 
+                  dim_in_kde: 2
+                  kde_distribution_type: "VonMises"
+
+            mdpf_forward_nll:
+              type: kde_nll
+              output_keys:
+                particles: "forward_particles"
+                particle_weights: "forward_particle_weights"
+                bandwidths: "forward_bandwidths"
+              particle_extract_dim_params:
+                0: 
+                  dim_in_kde: 0
+                  kde_distribution_type: "Normal"
+                1: 
+                  dim_in_kde: 1
+                  kde_distribution_type: "Normal"
+                2: 
+                  dim_in_kde: 2
+                  kde_distribution_type: "VonMises"
+
+
+            
+            mdpf_backward_nll:
+              type: kde_nll
+              output_keys:
+                particles: "backward_particles"
+                particle_weights: "backward_particle_weights"
+                bandwidths: "backward_bandwidths"
+
+              particle_extract_dim_params:
+                0: 
+                  dim_in_kde: 0
+                  kde_distribution_type: "Normal"
+                1: 
+                  dim_in_kde: 1
+                  kde_distribution_type: "Normal"
+                2: 
+                  dim_in_kde: 2
+                  kde_distribution_type: "VonMises"
+
+
+            
+
+            # mdps_position_recall:
+            #   type: distance_recall
+
+            #   # Measure the euclidean distance 
+            #   distance_measurement_type: "Euclidean"
+
+            #   # The name of the single point prediction key
+            #   output_keys:
+            #     single_point_prediction: "top_modes"
+            #     # single_point_prediction: "single_point_prediction"
+
+            #   # How we are going to select our hypothesis mode
+            #   multiple_hypothesis_selection_mode: "min"
+
+            #   # Which dims of the single point prediction we want to use
+            #   # For position we just need the first 2 dims
+            #   single_point_prediction_dims_to_use: [0, 1]
+
+            #   # Which dims of the true state to use
+            #   # For position we just need the first 2 dims
+            #   true_state_dims_to_use: [0, 1]
+
+            #   # The thresholds to use (in meters)
+            #   thresholds: [0, 0.1, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+
+
+
+            # mdps_position_recall:
+            #   type: multiple_distance_recall
+
+            #   metrics:
+            #     mdps_position_recall:
+            #       output_keys:
+            #         single_point_prediction: "top_modes"
+            #       multiple_hypothesis_selection_mode: "min"
+
+
+
+            #   # Measure the euclidean distance 
+            #   distance_measurement_type: "Euclidean"
+
+            #   # Which dims of the single point prediction we want to use
+            #   # For position we just need the first 2 dims
+            #   single_point_prediction_dims_to_use: [0, 1]
+
+            #   # Which dims of the true state to use
+            #   # For position we just need the first 2 dims
+            #   true_state_dims_to_use: [0, 1]
+
+            #   # The thresholds to use (in meters)
+            #   thresholds: [0, 0.1, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]

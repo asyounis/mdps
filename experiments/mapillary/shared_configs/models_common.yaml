@@ -1,0 +1,122 @@
+
+map_encoder_model:
+
+  # The type of this model
+  type: LargeMapEncoder
+
+  # The name of the backbone to use
+  # Currently Available:
+  #     - resnet18
+  #     - resnet50
+  #     - resnet101
+  #     - vgg19 (original OrienterNet paper)
+  #     - vgg16
+  backbone_name: vgg19
+
+  # The number of classes for the different categories in the map
+  number_of_classes:
+      areas: 7
+      ways: 10
+      nodes: 33
+
+  # The dimension of the learned embedding for each class in each category
+  embedding_dim: 16
+
+  # RThe number of map encoder layers to use.  AKA the number 
+  # of down-sampled feature maps
+  encoder_number_of_blocks: 3
+
+  # The latent dimension of each of the Unet Decoder blocks
+  decoder_latent_dims: [64, 64, 128]
+
+  # Not really sure what this does???
+  # Also seems to not really be needed
+  # output_scales: [0]
+
+  # The size of the output latent dim
+  output_latent_dim: 8
+
+  # The number of pixels per meter
+  pixels_per_meter: 2
+
+
+observation_encoder_model:
+
+  # The type of this model
+  type: BEVEncoder
+
+  # The name of the backbone to use
+  # Currently Available:
+  #     - resnet18
+  #     - resnet50
+  #     - resnet101 (original OrienterNet paper)
+  backbone_name: resnet101
+  # backbone_name: resnet18
+
+  # The size of the image that we will pass into the encoder
+  # input_image_size: [512, 512] # Orienternet Origional Value
+  input_image_size: [256, 256] 
+
+  # The size of the output latent dim
+  output_latent_dim: 128
+
+  # The max for the Z planes
+  z_max: 32
+
+  # The max for X (Not sure what X is)
+  x_max: 32
+
+  # The range of the scales that will be used for the polar projection
+  scale_range: [0, 9]
+
+  # The number of different scales that we have
+  # This is how many discrimination we have in the scales range
+  number_of_scales_bins: 33
+
+  # The number of pixels per meter
+  pixels_per_meter: 2
+
+  # The configs for the BEV net
+  bev_net_configs:  
+
+      # The number of blocks that will be used  
+      number_of_blocks: 4
+
+      # The different dims we will use
+      latent_dim: 128
+      input_dim: 128
+      output_dim: 8
+
+
+
+filter_weights_model: 
+
+  # The type of this model
+  type: MapMatchingWeightModel
+
+  # The particle dims to use for the translation in the x and y direction as well as
+  # the rotation when extracting local maps
+  particle_dims_to_use_for_local_map_extraction:
+    translate_x: 0
+    translate_y: 1
+    rotation: 2
+
+output_weights_model: 
+
+  # The type of this model
+  type: MapMatchingWithAdditionalInputsWeightModel
+
+  # The parameters of the network
+  input_dim: 3
+  latent_space: 64
+  number_of_layers: 4
+  non_linear_type: "PReLU"
+  min_weight: 0.0001
+  max_weight: 1.0
+
+  # The particle dims to use for the translation in the x and y direction as well as
+  # the rotation when extracting local maps
+  particle_dims_to_use_for_local_map_extraction:
+    translate_x: 0
+    translate_y: 1
+    rotation: 2

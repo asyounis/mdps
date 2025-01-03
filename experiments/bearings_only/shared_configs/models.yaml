@@ -1,0 +1,154 @@
+
+observation_encoder_model:
+
+  # The type of this model
+  type: MLPObservationEncoder
+
+  # The parameters of the network
+  input_dim: 2
+  latent_space: 8
+  number_of_layers: 3
+  non_linear_type: "ReLU"
+
+dynamics_model:
+
+  # The type of this model
+  type: LearnedDynamicsResidual
+
+  # The dims we should mask out
+  particles_mask_out_dims: [0, 1]
+
+  # The scale factor for the network in pixels
+  residual_scale_factor: [5.0, 5.0, 2.0, 2.0]
+
+  # The particle dimension types
+  particle_dimension_types: ["RealNumbers", "RealNumbers", "Angles"]
+
+  # The number of noise dims to have
+  noise_dim: 4
+
+  # The parameters for the particle encoder model
+  particle_encoder_latent_space: 8
+  particle_encoder_number_of_layers: 4
+  particle_encoder_non_linear_type: "ReLU"
+
+  # The parameters for the action encoder model
+  # This turns off the action encoder part of the dynamics
+  action_encoder_latent_space: 0
+  action_encoder_number_of_layers: 0
+  action_encoder_non_linear_type: ""
+
+  # The parameters for the residual dynamics model
+  dynamics_latent_space: 8
+  dynamics_number_of_layers: 4
+  dynamics_non_linear_type: "ReLU"
+
+
+
+filter_weights_model: 
+
+  # The type of this model
+  type: SimpleFeedForwardWeightModel
+
+  # The size of the observation encoders latent space
+  encoded_observation_latent_space: 8
+  additional_inputs_latent_space: 0
+
+  # The information about the particle dimension
+  particle_dimension_types:
+    # Position/angle
+    0: "RealNumbers"
+    1: "RealNumbers"
+    2: "Angles"
+
+  # The particle dimensions to use  
+  particle_dimensions_to_use: [0, 1, 2]
+
+  # The min and max weight to apply to each particle 
+  min_weight: 0.00001
+  max_weight: 1.0
+
+  # The parameters for the particle encoder model
+  particle_encoder_latent_space: 8
+  particle_encoder_number_of_layers: 3
+  particle_encoder_non_linear_type: "ReLU"
+
+  # The parameters for the weight predictor model
+  weight_predictor_latent_space: 8
+  weight_predictor_number_of_layers: 3
+  weight_predictor_non_linear_type: "ReLU"
+
+
+output_weights_model: 
+
+  # The type of this model
+  type: SimpleFeedForwardWeightModel
+
+  # The size of the observation encoders latent space
+  encoded_observation_latent_space: 8
+  additional_inputs_latent_space: 2
+
+  # The information about the particle dimension
+  particle_dimension_types:
+    # Position/angle
+    0: "RealNumbers"
+    1: "RealNumbers"
+    2: "Angles"
+
+  # The particle dimensions to use  
+  particle_dimensions_to_use: [0, 1, 2]
+
+  # The min and max weight to apply to each particle 
+  min_weight: 0.00001
+  max_weight: 1.0
+
+  # The parameters for the particle encoder model
+  particle_encoder_latent_space: 8
+  particle_encoder_number_of_layers: 4
+  particle_encoder_non_linear_type: "ReLU"
+
+  # The parameters for the weight predictor model
+  weight_predictor_latent_space: 8
+  weight_predictor_number_of_layers: 4
+  weight_predictor_non_linear_type: "ReLU"
+
+
+bandwidth_model: 
+  
+  # The type of this model
+  type: FixedBandwith
+
+  # The bandwidth to start with
+  # Must be a positive number
+  starting_bandwidths: [2.0, 2.0, 0.03]
+
+  # the min bandwidth value that we want to use.  
+  # This must be a positive number
+  min_bandwidths: [0.1, 0.1, 0.001]
+
+
+
+
+
+
+
+
+bandwidth_model_resampling: 
+  
+  # The type of this model
+  type: FixedBandwith
+
+  # The bandwidth to start with
+  # Must be a positive number
+  starting_bandwidths: [0.75, 0.75, 0.03]
+
+  # the min bandwidth value that we want to use.  
+  # This must be a positive number
+  min_bandwidths: [0.1, 0.1, 0.001]
+
+
+
+
+
+
+

@@ -1,0 +1,265 @@
+
+model_architecture_files:
+  - "../experiments/mapillary/shared_configs/models_common.yaml"
+  - "../experiments/mapillary/shared_configs/models_no_extra_dims.yaml"
+
+
+model_architecture_overrides:
+  
+  main_model:
+    type: "mdps"
+
+    # The number of particles to use
+    number_of_initial_particles: 1000
+    number_of_particles: 250
+
+
+    # The parameters we will use for the different dimensions of the particles
+    # of the particle filter.  Here we specify what kind of distribution we wish to use
+    # for the KDE for that dimension. 
+    # Here we will also specify how to initialize each of the dimensions since sometimes 
+    # we will have unsupervised latent dimensions that need to be initialized differently 
+    # than the other variables
+    forward_particle_dimension_parameters:
+      
+      # The x position dimension
+      0:
+        # The type of distribution we will use for all the KDE computation
+        kde_distribution_type: "Normal"
+
+        # The initialization parameters we will be using
+        initialization_parameters:
+          # The method used to initialize the particle filter particle set
+          # Options are:
+          #       - "random":  creates a random particle set via uniform sampling
+          #       - "true_state_with_small_noise":  creates the initial particle state as the true state with very little (basically 0 noise) added.
+          method: true_state_with_small_noise
+
+          # The noise standard deviation since we are using Normal
+          noise_spread: 100.0
+
+          # The parameters that specify where to get the true state value from
+          true_state_parameters: 
+
+            # The name of the variable to get the true state from
+            # Current options are:
+            #     - xy_position_global_frame_init
+            #     - yaw_init
+            variable_name: xy_position_global_frame_init
+
+            # The index from the variable name to extract the true state from
+            variable_dimenstion_index: 0
+
+
+      # The y position dimension
+      1:
+        kde_distribution_type: "Normal"
+        initialization_parameters:
+          method: true_state_with_small_noise
+          noise_spread: 100.0
+          true_state_parameters: 
+            variable_name: xy_position_global_frame_init
+            variable_dimenstion_index: 1
+
+      # The angle dimension
+      2:
+        kde_distribution_type: "VonMises"
+        initialization_parameters:
+          method: true_state_with_small_noise
+
+          # This is the concentration since we are using the Von Mises
+          # noise_spread: 0.001 # close to 0 -> uniform
+          noise_spread: 100.0 # close to 0 -> uniform
+          true_state_parameters: 
+            variable_name: yaw_init
+            variable_dimenstion_index: 0
+
+    # The parameters we will use for the different dimensions of the particles
+    # of the particle filter.  Here we specify what kind of distribution we wish to use
+    # for the KDE for that dimension. 
+    # Here we will also specify how to initialize each of the dimensions since sometimes 
+    # we will have unsupervised latent dimensions that need to be initialized differently 
+    # than the other variables
+    backward_particle_dimension_parameters:
+
+      # The x position dimension
+      0:
+        # The type of distribution we will use for all the KDE computation
+        kde_distribution_type: "Normal"
+
+        # The initialization parameters we will be using
+        initialization_parameters:
+          # The method used to initialize the particle filter particle set
+          # Options are:
+          #       - "random":  creates a random particle set via uniform sampling
+          #       - "true_state_with_small_noise":  creates the initial particle state as the true state with very little (basically 0 noise) added.
+          method: true_state_with_small_noise
+
+          # The noise standard deviation since we are using Normal
+          noise_spread: 100.0
+
+          # The parameters that specify where to get the true state value from
+          true_state_parameters: 
+
+            # The name of the variable to get the true state from
+            # Current options are:
+            #     - xy_position_global_frame_init
+            #     - yaw_init
+            variable_name: xy_position_global_frame_init
+
+            # The index from the variable name to extract the true state from
+            variable_dimenstion_index: 0
+
+
+      # The y position dimension
+      1:
+        kde_distribution_type: "Normal"
+        initialization_parameters:
+          method: true_state_with_small_noise
+          noise_spread: 100.0
+          true_state_parameters: 
+            variable_name: xy_position_global_frame_init
+            variable_dimenstion_index: 1
+
+      # The angle dimension
+      2:
+        kde_distribution_type: "VonMises"
+        initialization_parameters:
+          method: true_state_with_small_noise
+
+          # This is the concentration since we are using the Von Mises
+          # noise_spread: 0.001 # close to 0 -> uniform
+          noise_spread: 1.0 # close to 0 -> uniform
+          true_state_parameters: 
+            variable_name: yaw_init
+            variable_dimenstion_index: 0
+
+
+    # The configs that setup the particle resampling method
+    particle_resampling_configs: 
+
+      # The particle selection method that we will use for particle resampling
+      # after mixing the weights with a uniform dist
+      # Options are:
+      #       - "multinomial": Select particles via Multinomial resampling
+      #       - "stratified": Select particles via Stratified resampling
+      #       - "residual": Select particles via Residual resampling
+      #       - "discrete_soft_resampling": Soft resampling
+      resampling_method: "stratified"
+
+    # Do the dense search refinement at the end
+    do_dense_search_refinement: False
+
+    # The Configs to use for NMS mode finding
+    nms_mode_finding_configs: 
+
+      # The axis of h
+      nms_thresholds: [10,10, 0.52359787756]
+
+      # The number of modes to select
+      number_of_modes: 3
+
+      # The number of samples to draw when selecting the modes
+      number_of_samples_to_draw: 10000
+
+
+    internal_model_names:
+      map_encoder_model: map_encoder_model
+      observation_encoder_model: observation_encoder_model
+      
+      forward_dynamics_model: dynamics_model
+      backward_dynamics_model: dynamics_model
+
+      forward_weights_model: filter_weights_model
+      backward_weights_model: filter_weights_model
+      output_weights_model: output_weights_model
+
+      forward_bandwidth_model: bandwidth_model
+      backward_bandwidth_model: bandwidth_model
+      output_bandwidth_model: output_bandwidth_model
+
+      backward_bandwidth_model_resampling: bandwidth_model_resampling
+      forward_bandwidth_model_resampling: bandwidth_model_resampling
+
+      single_point_prediction_weight_model: filter_weights_model
+
+variables:
+  "<root_save_dir>": "../experiments/mapillary/mdps_strat/saves/"
+  "<number_of_runs>": 1
+
+# No imports or overrides for this 
+experiments_import: []
+experiments_overrides: []
+
+# We have templates though!
+experiment_templates_import:
+    - "../experiments/mapillary/shared_configs/experiment_templates.yaml"
+    - "../experiments/mapillary/shared_configs/mdps_experiment_templates.yaml"
+
+
+experiments:
+
+  - Training_Filters_Stage_1:
+      do_run: False
+      templates_to_use: ["Training_Template", "MDPS_Training_Filters_Base_Template", "MDPS_Training_Filters_Stage_1_Template"]
+
+
+  - Training_Filters_Stage_2:
+      do_run: False
+      templates_to_use: ["Training_Template", "MDPS_Training_Filters_Base_Template", "MDPS_Training_Filters_Stage_2_Template"]
+
+
+  - Training_Weights:
+      do_run: False 
+      templates_to_use: ["Training_Template", "MDPS_Training_Weights_Template"]
+
+  - Training_All:
+      do_run: False 
+      templates_to_use: ["Training_Template", "MDPS_Training_all_Template"]
+
+
+
+
+
+
+
+  - 001_Evaluation_Filters_Stage_1:
+      do_run: False
+
+      templates_to_use: ["Evaluation_Template", "MDPS_Evaluation_Template"]
+      save_dir: <root_save_dir>/001_evaluation_filters_stage_1/
+
+      pretrained_models:
+        full_model: <root_save_dir>/001_training_filters_stage_1/<framework_var_run_number>/models/best/full_model.pt
+
+
+  - 002_Evaluation_Filters_Stage_2:
+      do_run: False
+
+      templates_to_use: ["Evaluation_Template", "MDPS_Evaluation_Template"]
+      save_dir: <root_save_dir>/002_evaluation_filters_stage_2/
+
+      pretrained_models:
+        full_model: <root_save_dir>/002_training_filters_stage_2/<framework_var_run_number>/models/best/full_model.pt
+
+
+  - 003_Evaluation_Weights:
+      do_run: False
+
+      templates_to_use: ["Evaluation_Template", "MDPS_Evaluation_Template"]
+      save_dir: <root_save_dir>/003_evaluation_weights/
+
+      pretrained_models:
+        full_model: <root_save_dir>/003_training_weights/<framework_var_run_number>/models/best/full_model.pt
+
+
+
+  - 004_Evaluation_All:
+      do_run: True
+
+      templates_to_use: ["Evaluation_Template", "MDPS_Evaluation_Template"]
+      save_dir: <root_save_dir>/004_evaluation_all/
+
+      pretrained_models:
+        full_model: <root_save_dir>/004_training_all/<framework_var_run_number>/models/best/full_model.pt
+

@@ -1,0 +1,85 @@
+
+model_architecture_files:
+  - "../experiments/kitti/shared_configs/models.yaml"
+
+
+model_architecture_overrides:
+  
+  main_model:
+    type: "mdpf"
+
+    # The number of particles to use
+    number_of_initial_particles: 1000
+    number_of_particles: 250
+
+    # The parameters we will use to initialize the MDPF system
+    initialization_parameters:
+
+      # The method used to initilize the particle filter particle set
+      # Options are:
+      #       - "random":  creates a random particle set via uniform sampling
+      #       - "true_state_with_small_noise":  creates the initial particle state as the true state with very little (basically 0 noise) added.
+      initialization_method: "random"
+  
+    # The configs that setup the particle resampling method
+    particle_resampling_configs: 
+
+      # The particle selection method that we will use for particle resampling
+      # after mixing the weights with a uniform dist
+      # Options are:
+      #       - "multinomial": Select particles via Multinomial resampling
+      #       - "stratified": Select particles via Stratified resampling
+      #       - "residual": Select particles via Residual resampling
+      #       - "discrete_soft_resampling": Soft resampling
+      resampling_method: "stratified"
+
+    # If we should decouple the posterior and resampling distributions
+    decouple_output_and_resampling_distributions: True
+
+    # The direction to use for the filter.
+    # This can be "forward" or "backward"
+    direction_mode: "backward"
+
+    # The names of the internal models that will be used
+    internal_model_names:
+      map_encoder_model: map_encoder_model
+      observation_encoder_model: observation_encoder_model
+      dynamics_model: dynamics_model
+      weights_model: filter_weights_model
+      bandwidth_model: bandwidth_model
+
+variables:
+  "<root_save_dir>": "../experiments/kitti/mdpf_backward/saves/"
+  "<number_of_runs>": 1
+
+# No imports or overrides for this 
+experiments_import: []
+experiments_overrides: []
+
+# We have templates though!
+experiment_templates_import:
+    - "../experiments/kitti/shared_configs/experiment_templates.yaml"
+    - "../experiments/kitti/shared_configs/mdpf_experiment_templates.yaml"
+
+
+
+
+experiments:
+
+  - Training:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Training_Template", "MDPF_Training_Template"]
+
+
+  - Evaluation:
+    
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", MDPF_Evaluation_Template]
+

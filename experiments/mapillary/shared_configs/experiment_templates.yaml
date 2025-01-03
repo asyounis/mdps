@@ -1,0 +1,105 @@
+experiment_templates:
+
+  - Training_Template:
+
+      # The number of times to run this experiment
+      number_of_runs: <number_of_runs>
+
+      # Specifies that we want to train and what kind of trainer to use
+      application: training
+      experiment_type: training
+      training_type: full_sequence_trainer
+
+      # # The parameters for the device to use
+      # # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+      # device_configs:
+      #   device: "cuda_auto_multi:4"
+      #   min_free_memory_gb: 1.0
+      #   max_number_of_tasks: 10
+
+      # The configs for the main model
+      # Usually this just points to a model architecture config
+      model_configs:
+
+        # The name of the model architecture config to use 
+        main_model_name: "main_model"
+
+      # Configs to load models from
+      # This specifies which models we should load and what save files to load for those models
+      # pretrained_models:
+        # observation_encoder_model: <pretrained_root_save_dir>/training/run_0000/models/best/observation_encoder_model.pt
+        # weights_model: <pretrained_root_save_dir>/training/run_0000/models/best/weights_model.pt
+
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # Dont write too often
+        data_plotter_plot_modulo: 1000
+
+
+        # The usages configs for how we are going to use the dataset
+        dataset_usage_configs:
+          training_dataset_name: training
+          validation_dataset_name: validation
+
+        # # The number of CPUs to use for the data loading
+        # # Should be less than the number of available cpus otherwise pytorch complains
+        # num_cpu_cores_for_dataloader: 12
+
+        # How many epochs to train for
+        epochs: 400
+
+        # Turn off truncation 
+        truncated_bptt_modulo: -1
+
+        # # The batch sizes for training
+        # batch_sizes:
+        #   # training: 12
+        #   # validation: 12
+        #   training: 3
+        #   validation: 3
+
+
+        # The configs that specify early stopping
+        early_stopping_configs:
+          patience: 25
+          start_offset: 150
+          min_delta: 0
+          max_lr_change: 3
+
+        optimizer_configs:
+          type: "Adam"
+          weight_decay: 0.0
+          gradient_clip_value: 300.0
+
+        lr_scheduler_configs:
+          type: "ReduceLROnPlateau"
+          threshold: 0.001
+          factor: 0.1
+          patience: 20
+          cooldown: 4
+          min_lr: 0.0
+          verbose: True
+          start_epoch: 0
+
+
+
+
+
+
+  - Evaluation_Template:
+
+      # The number of times to run this experiment
+      number_of_runs: <number_of_runs>
+      
+      application: evaluation
+      experiment_type: evaluation
+      evaluation_type: mapillary_evaluator
+
+
+      dataset_configs_file: "../experiments/mapillary/shared_configs/dataset_mapillary_custom_split_sequences_long.yaml"
+
+      model_configs:
+        main_model_name: "main_model"
+

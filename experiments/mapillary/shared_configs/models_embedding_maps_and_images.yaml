@@ -1,0 +1,56 @@
+
+map_encoder_model:
+
+  # The type of this model
+  type: RetievalMapEncoder
+
+  # The name of the backbone to use
+  # Currently Available:
+  #     - resnet18
+  #     - resnet50
+  #     - resnet101
+  #     - vgg19 (original OrienterNet paper)
+  #     - vgg16
+  backbone_name: vgg19
+
+  # The number of classes for the different categories in the map
+  number_of_classes:
+      areas: 7
+      ways: 10
+      nodes: 33
+
+  # The dimension of the learned embedding for each class in each category
+  embedding_dim: 16
+
+  # The number of map encoder layers to use.  AKA the number 
+  # of down-sampled feature maps
+  encoder_number_of_blocks: 3
+
+  # The latent dimension of each of the Unet Decoder blocks
+  decoder_latent_dims: [64, 128, 256]
+
+  # Not really sure what this does???
+  # Also seems to not really be needed
+  # output_scales: [0]
+
+  # The number of pixels per meter
+  pixels_per_meter: 2
+
+  # The number of rotation outputs
+  number_of_rotation_outputs: 4
+
+  # The size of the output embedding dim
+  output_embedding_dim: 16
+
+
+observation_encoder_model:
+
+  # The type of this model
+  type: ImageToVecObservationEncoder
+
+  # The size of the observation to use
+  observation_size: [256, 256]
+
+  # The size of the output embedding dim
+  output_encoding_dim: 16
+  

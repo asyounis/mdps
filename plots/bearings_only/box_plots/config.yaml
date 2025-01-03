@@ -1,0 +1,90 @@
+
+
+plot_configs:
+
+
+  bearings_only_box_plot_all: 
+
+      save_file_base_name: "bearings_only_box_plot_all"
+      save_dir: "./output/"
+      base_dir: "../../../experiments/bearings_only/"
+      number_of_runs: 11
+
+      y_axis_label: "Neg. Log-likelihood"
+      title: "Bearings Only Method Comparison"
+
+      # y_axis_limits: [4.9, 6.5]
+      y_axis_limits: [4.95, 7.05]
+
+      experiments:
+
+
+        - mdpf_forward_truncated_gradient_resampling_multinomial: 
+            dir_name: "mdpf_forward_truncated_gradient_resampling_multinomial" 
+            display_name: "TG-PF \n(Multinomial)" 
+            evaluation_dir_name: "002_evaluation_filters_stage_2" 
+            metric_name: "nll"
+            use_inset: True
+
+        - mdpf_forward_truncated_gradient_resampling_stratified: 
+            dir_name: "mdpf_forward_truncated_gradient_resampling_stratified" 
+            display_name: "TG-PF \n(Stratified)" 
+            evaluation_dir_name: "002_evaluation_filters_stage_2" 
+            metric_name: "nll"
+            use_inset: True
+
+
+        - mdpf_forward_discrete_soft_resampling_multinomial: 
+            dir_name: "mdpf_forward_discrete_soft_resampling_multinomial" 
+            display_name: "SR-PF \n(Multinomial)" 
+            evaluation_dir_name: "002_evaluation_filters_stage_2" 
+            metric_name: "nll"
+            use_inset: False
+
+        - mdpf_forward_discrete_soft_resampling_stratified: 
+            dir_name: "mdpf_forward_discrete_soft_resampling_stratified" 
+            display_name: "SR-PF \n(Stratified)" 
+            evaluation_dir_name: "002_evaluation_filters_stage_2" 
+            metric_name: "nll"
+            use_inset: False
+
+
+        - mdpf_forward_multinomial: 
+            dir_name: "mdpf_forward_multinomial" 
+            display_name: "MDPF\n(Multinomial)" 
+            evaluation_dir_name: "002_evaluation_filters_stage_2" 
+            metric_name: "nll"
+            use_inset: False
+
+        - mdpf_forward_residual: 
+            dir_name: "mdpf_forward_residual" 
+            display_name: "MDPF\n(Residual)" 
+            evaluation_dir_name: "002_evaluation_filters_stage_2" 
+            metric_name: "nll"
+            use_inset: False
+
+        - mdpf_forward_stratified: 
+            dir_name: "mdpf_forward_stratified" 
+            display_name: "MDPF\n(Stratified)" 
+            evaluation_dir_name: "002_evaluation_filters_stage_2" 
+            metric_name: "nll"
+            use_inset: False
+
+
+        - mdpf_backward_stratified: 
+            dir_name: "mdpf_backward_stratified" 
+            display_name: "MDPF-Backward\n(Stratified)" 
+            evaluation_dir_name: "002_evaluation_filters_stage_2" 
+            metric_name: "nll"
+            use_inset: False
+
+        - mdps: 
+            dir_name: "mdps_strat" 
+            display_name: "MDPS\n(Stratified)" 
+            # evaluation_dir_name: "003_evaluation_weights" 
+            evaluation_dir_name: "004_evaluation_all" 
+            metric_name: "mdps_nll"
+            use_inset: False
+
+
+

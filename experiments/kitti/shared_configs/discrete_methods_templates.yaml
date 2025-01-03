@@ -1,0 +1,164 @@
+experiment_templates:
+
+
+  - Discrete_Methods_Evaluation_base:
+
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # The parameters for the device to use
+      # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+      device_configs:
+        device: "cuda_auto_multi:1"
+        # device: "cuda_use_all"
+        min_free_memory_gb: 1.0
+        max_number_of_tasks: 10
+
+
+      # What Models to load
+      pretrained_models:
+        full_model: <root_save_dir>/001_training/<framework_var_run_number>/models/best/full_model.pt
+
+      evaluation_configs:         
+
+        num_cpu_cores_for_dataloader: 16
+
+        # The configs for the qualitative phase
+        qualitative_config:
+
+          # If we should run the qualitative
+          do_run: False
+
+          save_model_input_output_for_rendering_config:
+            do_save: True
+            number_to_save: 5
+
+          # The configs for the sequence renderings
+          sequence_rendering_config:
+
+            # If we should even render the sequences
+            do_render: False
+
+            # How many sequences to render
+            number_to_render: 10
+
+            # We dont have KDEs so disable all of this
+            xy_kde_posterior_rendering_configs:
+              do_render: False
+            angle_kde_posterior_rendering_configs:
+              do_render: False
+
+
+        quantitative_config:
+          do_run: True
+
+          # The batch sizes per GPU
+          # This will automatically scale the batch size when we scale the number of GPUs
+          batch_sizes_per_gpu:
+            evaluation: 1
+
+
+          metric_configs:
+
+            position_recall:
+              type: multiple_distance_recall
+
+              # Measure the euclidean distance 
+              distance_measurement_type: "Euclidean"
+
+
+              # The list of metrics that we will be computing
+              metrics:
+
+                # Position
+                position_recall:
+                  multiple_hypothesis_selection_mode: "min"
+                  output_keys:
+                    single_point_prediction: "single_point_prediction"
+
+
+                # Top Modes Position
+                top_modes_position_recall:
+                  multiple_hypothesis_selection_mode: "min"
+                  output_keys:
+                    single_point_prediction: "top_modes"
+
+
+              # Which dims of the single point prediction we want to use
+              # For position we just need the first 2 dims
+              single_point_prediction_dims_to_use: [0, 1]
+
+              # Which dims of the true state to use
+              # For position we just need the first 2 dims
+              true_state_dims_to_use: [0, 1]
+
+              # The thresholds to use (in meters)
+              thresholds: [0, 0.1, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+
+            angle_recall:
+              type: multiple_distance_recall
+
+              # Measure the euclidean distance 
+              distance_measurement_type: "Angle"
+
+              # The list of metrics that we will be computing
+              metrics:
+
+                # Position
+                angle_recall:
+                  multiple_hypothesis_selection_mode: "min"
+                  output_keys:
+                    single_point_prediction: "single_point_prediction"
+
+
+                # Top Modes angle
+                top_modes_angle_recall:
+                  multiple_hypothesis_selection_mode: "min"
+                  output_keys:
+                    single_point_prediction: "top_modes"
+
+              # Which dims of the single point prediction we want to use
+              # For angle we just want the last dim
+              single_point_prediction_dims_to_use: [2]
+
+              # Which dims of the true state to use
+              true_state_dims_to_use: [2]
+
+              # The thresholds to use (in radians)
+              thresholds: [0, 0.01745329, 0.05235988, 0.08726646, 0.12217305, 0.15707963, 0.19198622, 0.2268928, 0.26179939, 0.29670597, 0.33161256, 0.36651914, 0.40142573, 0.43633231, 0.4712389, 0.50614548, 0.54105207, 0.57595865, 0.61086524, 0.64577182, 0.68067841, 0.71558499, 0.75049158, 0.78539816, 0.82030475, 0.85521133, 0.89011792, 0.9250245, 0.95993109, 0.99483767, 1.02974426, 1.06465084, 1.09955743, 1.13446401, 1.1693706, 1.20427718, 1.23918377, 1.27409035, 1.30899694, 1.34390352, 1.37881011, 1.41371669, 1.44862328, 1.48352986, 1.51843645, 1.55334303]
+
+              # The scale factor to use when displaying if needed
+              # this is an optional config. Default value will be 1 if this config is not included
+              thresholds_display_scale_factor: 57.2957795131
+
+
+
+            position_vehicle_frame_recall:
+              type: multiple_distance_recall_xy_vehicle_frame_metric
+
+              # The list of metrics that we will be computing
+              metrics:
+
+                # Position
+                position_recall:
+                  multiple_hypothesis_selection_mode: "min"
+                  output_keys:
+                    single_point_prediction: "single_point_prediction"
+
+
+                # Top Modes Position
+                top_modes_position_recall:
+                  multiple_hypothesis_selection_mode: "min"
+                  output_keys:
+                    single_point_prediction: "top_modes"
+
+              # Which dims of the single point prediction we want to use
+              # For position we just need the first 2 dims
+              single_point_prediction_xy_dim_to_use: [0, 1]
+
+              # The thresholds to use (in meters)
+              thresholds: [0, 0.1, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+
+
+

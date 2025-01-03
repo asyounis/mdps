@@ -1,0 +1,205 @@
+
+
+
+
+dynamics_model:
+
+  # The type of this model
+  type: LearnedDynamicsResidual
+
+  # The dims we should mask out
+  # particles_mask_out_dims: [0, 1]
+  particles_mask_out_dims: []
+
+  # The scale factor for the network in pixels
+  residual_scale_factor: [128.0, 128.0, 2.0, 2.0]
+
+  # The particle dimension types
+  particle_dimension_types: ["RealNumbers", "RealNumbers", "Angles"]
+
+  # The number of noise dims to have
+  noise_dim: 4
+
+  # The parameters for the particle encoder model
+  particle_encoder_latent_space: 64
+  particle_encoder_number_of_layers: 4
+  particle_encoder_non_linear_type: "PReLU"
+
+  # The parameters for the action encoder model
+  action_encoder_latent_space: 64
+  action_encoder_number_of_layers: 4
+  action_encoder_non_linear_type: "PReLU"
+
+  # The parameters for the residual dynamics model
+  dynamics_latent_space: 64
+  dynamics_number_of_layers: 4
+  dynamics_non_linear_type: "PReLU"
+
+
+
+
+
+
+gaussian_dynamics_model:
+
+  # The type of this model
+  type: GaussianDynamicsModel
+
+  # The particle dimension types
+  particle_dimension_types: ["RealNumbers", "RealNumbers", "Angles"]
+
+  # The scale of the noise
+  # The 0.5235987756 is ~30 degrees in radians
+  # The 0.2617993878 is ~15 degrees in radians
+  # noise_scales: [15.0, 15.0, 0.5235987756]
+  noise_scales: [5.0, 5.0, 0.2617993878]
+
+
+
+###################################################################################
+# First Training stage
+###################################################################################
+bandwidth_model: 
+
+  # The type of this model
+  type: FixedBandwith
+
+  # The bandwidth to start with
+  # Must be a positive number
+  starting_bandwidths: [10.0, 10.0, 0.05]
+
+  # the min bandwidth value that we want to use.  
+  # This must be a positive number
+  min_bandwidths: [0.5, 0.5, 0.001]
+
+bandwidth_model_resampling: 
+  
+  # The type of this model
+  type: FixedBandwith
+
+  # The bandwidth to start with
+  # Must be a positive number
+  starting_bandwidths: [3.0, 3.0, 0.01]
+
+  # the min bandwidth value that we want to use.  
+  # This must be a positive number
+  min_bandwidths: [0.5, 0.5, 0.001]
+
+
+
+
+
+
+# bandwidth_model: 
+
+#   # The type of this model
+#   type: FixedBandwith
+
+#   # The bandwidth to start with
+#   # Must be a positive number
+#   starting_bandwidths: [5.0, 5.0, 0.05]
+
+#   # the min bandwidth value that we want to use.  
+#   # This must be a positive number
+#   min_bandwidths: [0.5, 0.5, 0.001]
+
+
+
+# ####################################################################################
+# # Take 2 Training stage
+# ####################################################################################
+# bandwidth_model: 
+
+#   # The type of this model
+#   type: FixedBandwith
+
+#   # The bandwidth to start with
+#   # Must be a positive number
+#   # starting_bandwidths: [2.5, 2.5, 0.01]
+#   starting_bandwidths: [10.0, 10.0, 0.01]
+
+#   # the min bandwidth value that we want to use.  
+#   # This must be a positive number
+#   min_bandwidths: [0.0001, 0.0001, 0.001]
+
+
+
+
+# bandwidth_model_resampling: 
+  
+#   # The type of this model
+#   type: FixedBandwith
+
+#   # The bandwidth to start with
+#   # Must be a positive number
+#   starting_bandwidths: [0.5, 0.5, 0.01]
+
+#   # the min bandwidth value that we want to use.  
+#   # This must be a positive number
+#   min_bandwidths: [0.001, 0.001, 0.001]
+
+
+
+
+
+
+
+
+
+
+
+# ###################################################################################
+# # First Training stage
+# ###################################################################################
+
+# output_bandwidth_model: 
+  
+#   # The type of this model
+#   type: FixedBandwith
+
+#   # The bandwidth to start with
+#   # Must be a positive number
+#   starting_bandwidths: [8.0, 8.0, 0.05]
+
+#   # the min bandwidth value that we want to use.  
+#   # This must be a positive number
+#   min_bandwidths: [0.5, 0.5, 0.001]
+
+
+
+
+
+
+
+###################################################################################
+# All Training stage
+###################################################################################
+
+output_bandwidth_model: 
+  
+  # The type of this model
+  type: FixedBandwith
+
+  # The bandwidth to start with
+  # Must be a positive number
+  starting_bandwidths: [5.0, 5.0, 0.025]
+
+  # the min bandwidth value that we want to use.  
+  # This must be a positive number
+  min_bandwidths: [0.001, 0.001, 0.001]
+
+
+
+
+output_bandwidth_model_with_small_bandwidth_values: 
+  
+  # The type of this model
+  type: FixedBandwith
+
+  # The bandwidth to start with
+  # Must be a positive number
+  starting_bandwidths: [1.0, 1.0, 0.005]
+
+  # the min bandwidth value that we want to use.  
+  # This must be a positive number
+  min_bandwidths: [0.0000001, 0.0000001, 0.0000001]

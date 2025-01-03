@@ -1,0 +1,177 @@
+experiment_templates:
+
+
+  - MDPF_Training_Template_Base:
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs: 
+          name: KDENLLMetric
+
+          output_keys:
+            particles: "particles"
+            particle_weights: "particle_weights"
+            bandwidths: "bandwidths"
+
+          particle_extract_dim_params:
+            0: 
+              dim_in_kde: 0
+              kde_distribution_type: "Normal"
+            1: 
+              dim_in_kde: 1
+              kde_distribution_type: "Normal"
+            2: 
+              dim_in_kde: 2
+              kde_distribution_type: "VonMises"
+
+
+  - MDPF_Training_Template_Stage_1:
+
+      # The save dir
+      save_dir: <root_save_dir>/001_training_filters_stage_1/
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          output_bandwidth_model:     "freeze"
+          # output_bandwidth_model:     0.00001
+          resampling_bandwidth_model: 0.0001
+          output_weights_model:       0.001
+          resampling_weights_model:   0.001
+          dynamics_model:             0.001
+          observation_encoder_model:  0.001
+
+
+  - MDPF_Training_Template_Stage_2:
+
+      # The save dir
+      save_dir: <root_save_dir>/002_training_filters_stage_2/
+
+      # What Models to load
+      pretrained_models:
+        full_model: <root_save_dir>/001_training_filters_stage_1/<framework_var_run_number>/models/best/full_model.pt
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          output_bandwidth_model:     0.00025
+          resampling_bandwidth_model: "Freeze"
+          output_weights_model:       "Freeze"
+          resampling_weights_model:   "Freeze"
+          dynamics_model:             "Freeze"
+          observation_encoder_model:  "Freeze"
+
+        models_with_disabled_gradients:
+          - resampling_bandwidth_model
+          - output_weights_model
+          - resampling_weights_model
+          - dynamics_model
+          - observation_encoder_model
+
+
+
+  - MDPF_Evaluation_Template_Base:
+
+      evaluation_configs:         
+        quantitative_config:
+          metric_configs:
+            nll:
+              type: kde_nll
+
+              # The dict keys to use to get the relevant things when computing this metric
+              output_keys:
+                particles: "particles"
+                particle_weights: "particle_weights"
+                bandwidths: "bandwidths"
+
+              particle_extract_dim_params:
+                0: 
+                  dim_in_kde: 0
+                  kde_distribution_type: "Normal"
+                1: 
+                  dim_in_kde: 1
+                  kde_distribution_type: "Normal"
+                2: 
+                  dim_in_kde: 2
+                  kde_distribution_type: "VonMises"
+
+            position_recall:
+              type: distance_recall
+
+              # Measure the euclidean distance 
+              distance_measurement_type: "Euclidean"
+
+              # The name of the single point prediction key
+              output_keys:
+                single_point_prediction: "single_point_prediction"
+
+              # Which dims of the single point prediction we want to use
+              # For position we just need the first 2 dims
+              single_point_prediction_dims_to_use: [0, 1]
+
+
+              # Which dims of the true state to use
+              # For position we just need the first 2 dims
+              true_state_dims_to_use: [0, 1]
+
+              # The thresholds to use (in meters)
+              thresholds: [0.1, 0.5, 1, 2, 3,  5, 10]
+
+            angle_recall:
+              type: distance_recall
+
+              # Measure the euclidean distance 
+              distance_measurement_type: "Angle"
+
+              # The name of the single point prediction key
+              output_keys:
+                single_point_prediction: "single_point_prediction"
+
+              # Which dims of the single point prediction we want to use
+              # For angle we just want the last dim
+              single_point_prediction_dims_to_use: [2]
+
+              # Which dims of the true state to use
+              true_state_dims_to_use: [2]
+
+              # The thresholds to use (in radians)
+              # This corresponds to thresholds in degrees of:
+              #     [1, 3, 5, 10, 15, 25, 45, 90]
+              thresholds: [0.017453292519943295, 0.05235987755982989, 0.08726646259971647, 0.17453292519943295, 0.2617993877991494, 0.4363323129985824, 0.7853981633974483, 1.5707963267948966]
+
+              # The scale factor to use when displaying if needed
+              # this is an optional config. Default value will be 1 if this config is not included
+              thresholds_display_scale_factor: 57.2957795131
+
+
+
+
+  - MDPF_Evaluation_Template_Stage_1:
+
+      # The save dir
+      save_dir: <root_save_dir>/001_evaluation_filters_stage_1/
+
+      # What Models to load
+      pretrained_models:
+        full_model: <root_save_dir>/001_training_filters_stage_1/<framework_var_run_number>/models/best/full_model.pt
+
+
+
+  - MDPF_Evaluation_Template_Stage_2:
+
+      # The save dir
+      save_dir: <root_save_dir>/002_evaluation_filters_stage_2/
+
+      # What Models to load
+      pretrained_models:
+        full_model: <root_save_dir>/002_training_filters_stage_2/<framework_var_run_number>/models/best/full_model.pt
+

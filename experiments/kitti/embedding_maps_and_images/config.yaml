@@ -1,0 +1,216 @@
+
+model_architecture_files:
+  - "../experiments/kitti/shared_configs/models_embedding_maps_and_images.yaml"
+
+
+model_architecture_overrides:
+  
+
+  main_model:
+    type: "embedding_maps_and_images"
+
+    # The number of rotations we should use for the matching process
+    number_of_matching_rotations: 
+        training: 4
+        validation: 4
+        evaluation: 256
+
+    # The Configs to use for NMS mode finding
+    nms_mode_finding_configs: 
+
+      # The axis of h
+      nms_thresholds: [10,10, 0.52359787756]
+
+      # The number of modes to select
+      number_of_modes: 3
+
+    # The names of the internal models that will be used
+    internal_model_names:
+      map_encoder_model: map_encoder_model
+      observation_encoder_model: observation_encoder_model
+
+
+    size_of_extracted_local_map_when_using_the_global_map: 256
+
+variables:
+  "<root_save_dir>": "../experiments/kitti/embedding_maps_and_images/saves/"
+  "<mapillary_root_save_dir>": "../experiments/mapillary/embedding_maps_and_images/saves/"
+  "<number_of_runs>": 1
+
+experiments_import: []
+
+# We have templates!
+experiment_templates_import:
+    - "../experiments/kitti/shared_configs/experiment_templates.yaml"
+    - "../experiments/kitti/shared_configs/discrete_methods_templates.yaml"
+
+
+experiments:
+
+  - Training_Map_Obs_Encoder:
+
+      # Specify which model to load
+      # We want to load from the mapillary saved files
+      pretrained_models:
+        map_encoder_model: <mapillary_root_save_dir>/001_training/<framework_var_run_number>/models/best/map_encoder_model.pt
+
+      # If we should run this experiment or not
+      do_run: False
+
+      # What templates to load for this experiment
+      templates_to_use: ["Training_Template"]
+
+      # The parameters for the device to use
+      # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+      device_configs:
+        # device: "cuda_auto_multi:1"
+        device: "cuda_use_all"
+        min_free_memory_gb: 1.0
+        max_number_of_tasks: 10
+
+      dataset_configs_file: "../experiments/kitti/shared_configs/dataset_kitti_sequences_short_indiv.yaml"
+      # dataset_configs_file: "../experiments/kitti/shared_configs/dataset_kitti_sequences_short.yaml"
+
+      # The save dir
+      save_dir: <root_save_dir>/000_training_obs_encoder/
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        do_checkpointing: False
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          map_encoder_model: "Freeze"
+          observation_encoder_model: 0.0001
+
+        # The batch sizes for training per GPU
+        # This will automatically scale the batch size when we scale the number of GPUs
+        batch_sizes_per_gpu:
+          training: 16
+          validation: 16
+          # training: 3
+          # validation: 3
+
+        # # The configs for the loss.  At minimum you need to specify the "name". 
+        # # All additional configs are metric specific
+        # loss_configs:
+        #   name: PassThroughMetric
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs:
+          name: DicreteNLLMetric
+
+
+
+
+  - Training:
+
+      # What Models to load
+      pretrained_models:
+        full_model: <root_save_dir>/000_training_obs_encoder/<framework_var_run_number>/models/best/full_model.pt
+
+      # If we should run this experiment or not
+      do_run: False
+
+      # What templates to load for this experiment
+      templates_to_use: ["Training_Template"]
+
+      # The parameters for the device to use
+      # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+      device_configs:
+        # device: "cuda_auto_multi:1"
+        device: "cuda_use_all"
+        min_free_memory_gb: 1.0
+        max_number_of_tasks: 10
+
+      dataset_configs_file: "../experiments/kitti/shared_configs/dataset_kitti_sequences_short_indiv.yaml"
+      # dataset_configs_file: "../experiments/kitti/shared_configs/dataset_kitti_sequences_short.yaml"
+
+      # The save dir
+      save_dir: <root_save_dir>/001_training/
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        do_checkpointing: False
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          full_model: 0.00001
+
+        # The batch sizes for training per GPU
+        # This will automatically scale the batch size when we scale the number of GPUs
+        batch_sizes_per_gpu:
+          training: 16
+          validation: 16
+          # training: 3
+          # validation: 3
+
+        # # The configs for the loss.  At minimum you need to specify the "name". 
+        # # All additional configs are metric specific
+        # loss_configs:
+        #   name: PassThroughMetric
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs:
+          name: DicreteNLLMetric
+
+
+
+
+
+
+  - Evaluation_Map_GT:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "Discrete_Methods_Evaluation_base"]
+
+      # The save dir
+      save_dir: <root_save_dir>/001_evaluation_use_gt/
+
+      evaluation_configs:         
+        model_control_parameters:
+          map_moving_method: "use_gt"
+
+
+
+  - Evaluation_Actions:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "Discrete_Methods_Evaluation_base"]
+
+      # The save dir
+      save_dir: <root_save_dir>/001_evaluation_actions/
+
+      evaluation_configs:         
+        model_control_parameters:
+          map_moving_method: "actions"
+
+
+
+  - Evaluation_Map_Centering:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "Discrete_Methods_Evaluation_base"]
+
+      # The save dir
+      save_dir: <root_save_dir>/001_evaluation_map_centering/
+
+      evaluation_configs:         
+        model_control_parameters:
+          map_moving_method: "map_centering"
+

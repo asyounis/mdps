@@ -1,0 +1,176 @@
+
+model_architecture_files:
+  - "../experiments/mapillary/shared_configs/models_common.yaml"
+
+
+model_architecture_overrides:
+  
+  main_model:
+    type: "orienternet"
+
+    # If we should normalize the BEV and Map feature maps before we run our matchings
+    normalize_feature_maps_before_matching: False
+
+    # The number of rotations we should use for the matching process
+    number_of_matching_rotations: 
+        training: 64
+        validation: 64
+        evaluation: 256
+
+    # The max sequence length we can use before we have to start chopping
+    max_sequence_length_before_chopping: 1
+
+    # The number of pixels per meter for the projections
+    # Note: must match the datasets pixel_per_meter
+    pixels_per_meter: 2
+
+    # The size of the local map that we will extract when we are using the global map
+    size_of_extracted_local_map_when_using_the_global_map: 256
+
+    # The names of the internal models that will be used
+    internal_model_names:
+      map_encoder_model: map_encoder_model
+      observation_encoder_model: observation_encoder_model
+
+    use_local_or_global_frame:
+      training: "Local"
+      validation: "Local"
+      evaluation: "Global"
+      # evaluation: "Local"
+
+    use_sequence_or_individual_images:
+      training: "Individual"
+      validation: "Individual"
+      evaluation: "Sequence"
+
+
+    # The Configs to use for NMS mode finding
+    nms_mode_finding_configs: 
+
+      # The axis of h
+      nms_thresholds: [10,10, 0.52359787756]
+
+      # The number of modes to select
+      number_of_modes: 3
+
+
+
+variables:
+  "<root_save_dir>": "../experiments/mapillary/orienternet/saves/"
+  "<number_of_runs>": 1
+
+experiments_import: []
+
+# We have templates!
+experiment_templates_import:
+    - "../experiments/mapillary/shared_configs/experiment_templates.yaml"
+    - "../experiments/mapillary/shared_configs/discrete_methods_templates.yaml"
+
+
+experiments:
+
+  - Training:
+
+      # If we should run this experiment or not
+      do_run: False
+
+      # What templates to load for this experiment
+      templates_to_use: ["Training_Template"]
+
+      # The parameters for the device to use
+      # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+      device_configs:
+        device: "cuda_auto_multi:4"
+        min_free_memory_gb: 1.0
+        max_number_of_tasks: 10
+
+      dataset_configs_file: "../experiments/mapillary/shared_configs/dataset_mapillary_custom_split_indiv_short.yaml"
+
+      # The save dir
+      save_dir: <root_save_dir>/001_training/
+
+      # Specify the configs needed for training
+      training_configs:       
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          full_model:     0.001
+
+        batch_sizes:
+          training: 56
+          validation: 56
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs:
+          name: DicreteNLLMetric
+
+
+
+
+  - Evaluation_Map_Centering:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "Discrete_Methods_Evaluation_base"]
+
+      # The save dir
+      save_dir: <root_save_dir>/001_evaluation_map_centering/
+
+      # What Models to load
+      pretrained_models:
+        full_model: <root_save_dir>/001_training/<framework_var_run_number>/models/best/full_model.pt
+
+      evaluation_configs:         
+
+        model_control_parameters:
+          map_moving_method: "map_centering"
+
+
+
+  - Evaluation_Map_GT:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "Discrete_Methods_Evaluation_base"]
+
+      # The save dir
+      save_dir: <root_save_dir>/001_evaluation_use_gt/
+
+      # What Models to load
+      pretrained_models:
+        full_model: <root_save_dir>/001_training/<framework_var_run_number>/models/best/full_model.pt
+
+      evaluation_configs:         
+
+        model_control_parameters:
+          map_moving_method: "use_gt"
+
+
+
+  - Evaluation_Actions:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "Discrete_Methods_Evaluation_base"]
+
+      # The save dir
+      save_dir: <root_save_dir>/001_evaluation_actions/
+
+      # What Models to load
+      pretrained_models:
+        full_model: <root_save_dir>/001_training/<framework_var_run_number>/models/best/full_model.pt
+
+      evaluation_configs:         
+
+        model_control_parameters:
+          map_moving_method: "actions"
+
+

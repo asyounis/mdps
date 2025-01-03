@@ -1,0 +1,404 @@
+
+model_architecture_files:
+  - "../experiments/bearings_only/shared_configs/models.yaml"
+
+
+model_architecture_overrides:
+  
+  traditional_FFBS_dynamics_model:
+
+    # The type of this model
+    type: TraditionalFFBSDynamicsModel
+
+    # The dims we should mask out
+    particles_mask_out_dims: [0, 1]
+
+    # The scale factor for the network in pixels
+    residual_scale_factor: [5.0, 5.0, 2.0, 2.0]
+
+    # The particle dimension types
+    particle_dimension_types: ["RealNumbers", "RealNumbers", "Angles"]
+
+
+    # The particle dimension types
+    particle_distribution_types: ["Normal", "Normal", "VonMises"]
+
+    # The number of noise dims to have
+    noise_dim: 4
+
+    # The parameters for the residual dynamics model
+    latent_space: 8
+    number_of_layers: 8
+    non_linear_type: "ReLU"
+
+
+  traditional_FFBS_weights_model:
+
+    # The type of this model
+    type: BeaingsOnlyTrueWeightModel
+
+
+  traditional_FFBS_observation_encoder:
+
+    # The type of this model
+    type: IdentityObsEncoder
+
+
+
+
+
+
+  main_model:
+    type: "TraditionalFFBS"
+
+    # The number of particles to use
+    number_of_initial_particles: 50
+    number_of_particles: 50
+
+
+    # parameters we will use for the different dimensions of the particles
+    # of the particle filter.  Here we specify what kind of distribution we wish to use
+    # for the KDE for that dimension. 
+    # Here we will also specify how to initialize each of the dimensions since sometimes 
+    # we will have unsupervised latent dimensions that need to be initialized differently 
+    # than the other variables
+    forward_particle_dimension_parameters:
+      
+      # The x position dimension
+      0:
+        # The type of distribution we will use for all the KDE computation
+        kde_distribution_type: "Normal"
+
+        # The initialization parameters we will be using
+        initialization_parameters:
+          # The method used to initialize the particle filter particle set
+          # Options are:
+          #       - "random":  creates a random particle set via uniform sampling
+          #       - "true_state_with_small_noise":  creates the initial particle state as the true state with very little (basically 0 noise) added.
+          method: true_state_with_small_noise
+
+          # The noise standard deviation since we are using Normal
+          noise_spread: 0.01
+
+          # The parameters that specify where to get the true state value from
+          true_state_parameters: 
+
+            # The name of the variable to get the true state from
+            # Current options are:
+            #     - xy_position_global_frame_init
+            #     - yaw_init
+            variable_name: xy_position_global_frame_init
+
+            # The index from the variable name to extract the true state from
+            variable_dimenstion_index: 0
+
+
+      # The y position dimension
+      1:
+        kde_distribution_type: "Normal"
+        initialization_parameters:
+          method: true_state_with_small_noise
+          noise_spread: 0.01 
+          true_state_parameters: 
+            variable_name: xy_position_global_frame_init
+            variable_dimenstion_index: 1
+
+      # The angle dimension
+      2:
+        kde_distribution_type: "VonMises"
+        initialization_parameters:
+          method: true_state_with_small_noise
+
+          # This is the concentration since we are using the Von Mises
+          noise_spread: 100.0
+          true_state_parameters: 
+            variable_name: yaw_init
+            variable_dimenstion_index: 0
+
+    # The configs that setup the particle resampling method
+    particle_resampling_configs: 
+
+      # The particle selection method that we will use for particle resampling
+      resampling_method: "discrete_resampling"
+
+      # The particle selection method that we will use for particle resampling
+      # Options are:
+      #       - "multinomial": Select particles via Multinomial resampling
+      #       - "stratified": Select particles via Stratified resampling
+      #       - "residual": Select particles via Residual resampling
+      particle_selection_method: "multinomial"
+
+    # If we should decouple the posterior and resampling distributions
+    decouple_output_and_resampling_distributions: True
+
+    # The direction to use for the filter.
+    # This can be "forward" or "backward"
+    direction_mode: "forward"
+
+    # The names of the internal models that will be used
+    internal_model_names:
+      map_encoder_model: None
+      observation_encoder_model: traditional_FFBS_observation_encoder
+      forward_dynamics_model: traditional_FFBS_dynamics_model
+      forward_weights_model: traditional_FFBS_weights_model
+      forward_bandwidth_model: bandwidth_model
+      forward_bandwidth_model_resampling: bandwidth_model_resampling
+      output_bandwidth_model: bandwidth_model
+
+variables:
+  "<root_save_dir>": "../experiments/bearings_only/traditional_FFBS/saves/"
+  "<number_of_runs>": 11
+
+# No imports or overrides for this 
+experiments_import: []
+experiments_overrides: []
+
+# We have templates though!
+experiment_templates_import:
+    - "../experiments/bearings_only/shared_configs/experiment_templates.yaml"
+    - "../experiments/bearings_only/shared_configs/mdpf_experiment_templates.yaml"
+
+
+
+
+
+experiments:
+
+  - Training_Dynamics_Model:
+
+      # If we should run this experiment or not
+      do_run: true
+
+      # What templates to load for this experiment
+      templates_to_use: ["Training_Template", "MDPF_Training_Template_Base","MDPF_Training_Template_Stage_1"]
+
+      # The save dir
+      save_dir: <root_save_dir>/001_training_dynamics_model/
+
+      # The number of times to run this experiment
+      number_of_runs: <number_of_runs>
+
+      # Specifies that we want to train and what kind of trainer to use
+      application: training
+      experiment_type: training
+      training_type: traditional_FFBS_dynamics_trainer
+
+      # The parameters for the device to use
+      # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+      device_configs:
+        device: "cuda_auto_multi:1"
+        min_free_memory_gb: 1.0
+        max_number_of_tasks: 10
+
+      # The config file for the dataset we want to use 
+      dataset_configs_file: "../experiments/bearings_only/shared_configs/dataset_bearings_only_training.yaml"
+
+      # The configs for the main model
+      # Usually this just points to a model architecture config
+      model_configs:
+
+        # The name of the model architecture config to use 
+        main_model_name: "main_model"
+
+      # Configs to load models from
+      # This specifies which models we should load and what save files to load for those models
+      # pretrained_models:
+        # observation_encoder_model: <pretrained_root_save_dir>/training/run_0000/models/best/observation_encoder_model.pt
+        # weights_model: <pretrained_root_save_dir>/training/run_0000/models/best/weights_model.pt
+
+
+      # Specify the configs needed for training
+      training_configs:  
+
+
+        # The usages configs for how we are going to use the dataset
+        dataset_usage_configs:
+          training_dataset_name: training
+          validation_dataset_name: validation
+
+        # The number of CPUs to use for the data loading
+        # Should be less than the number of available cpus otherwise pytorch complains
+        num_cpu_cores_for_dataloader: 8
+
+        # How many epochs to train for
+        epochs: 200
+
+        # Turn off truncation 
+        # truncated_bptt_modulo: -1
+
+        # The batch sizes for training
+        batch_sizes:
+          training: 2
+          validation: 2
+
+        # The configs that specify early stopping
+        early_stopping_configs:
+          patience: 15
+          start_offset: 25
+          min_delta: 0
+          max_lr_change: 2
+
+        optimizer_configs:
+          type: "Adam"
+          weight_decay: 0.0
+          gradient_clip_value: 50.0
+
+        lr_scheduler_configs:
+          type: "ReduceLROnPlateau"
+          threshold: 0.001
+          # threshold: 0.005
+          factor: 0.1
+          patience: 10
+          cooldown: 4
+          min_lr: 0.0
+          verbose: True
+          start_epoch: 0
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          forward_dynamics_model:             0.001
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs: 
+          name: KDENLLMetric
+
+          output_keys:
+            particles: "particles"
+            particle_weights: "particle_weights"
+            bandwidths: "bandwidths"
+
+          particle_extract_dim_params:
+            0: 
+              dim_in_kde: 0
+              kde_distribution_type: "Normal"
+            1: 
+              dim_in_kde: 1
+              kde_distribution_type: "Normal"
+            2: 
+              dim_in_kde: 2
+              kde_distribution_type: "VonMises"
+
+
+
+
+
+  - Training_Bandwidth:
+
+      # If we should run this experiment or not
+      do_run: True 
+
+      # What templates to load for this experiment
+      templates_to_use: ["Training_Template", "MDPF_Training_Template_Base","MDPF_Training_Template_Stage_1"]
+
+      # The save dir
+      save_dir: <root_save_dir>/001_training_dynamics_model/
+
+      # The number of times to run this experiment
+      number_of_runs: <number_of_runs>
+
+      # Specifies that we want to train and what kind of trainer to use
+      application: training
+      experiment_type: training
+      training_type: full_sequence_trainer
+
+      # The parameters for the device to use
+      # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+      device_configs:
+        device: "cuda_auto_multi:1"
+        min_free_memory_gb: 1.0
+        max_number_of_tasks: 10
+
+      # The config file for the dataset we want to use 
+      dataset_configs_file: "../experiments/bearings_only/shared_configs/dataset_bearings_only_training.yaml"
+
+      # The configs for the main model
+      # Usually this just points to a model architecture config
+      model_configs:
+
+        # The name of the model architecture config to use 
+        main_model_name: "main_model"
+
+      # Configs to load models from
+      # This specifies which models we should load and what save files to load for those models
+      pretrained_models:
+        forward_dynamics_model: <root_save_dir>/001_training_dynamics_model/run_0000/models/best/forward_dynamics_model.pt
+
+
+      # Specify the configs needed for training
+      training_configs:  
+
+
+        # The usages configs for how we are going to use the dataset
+        dataset_usage_configs:
+          training_dataset_name: training
+          validation_dataset_name: validation
+
+        # The number of CPUs to use for the data loading
+        # Should be less than the number of available cpus otherwise pytorch complains
+        num_cpu_cores_for_dataloader: 8
+
+        # How many epochs to train for
+        epochs: 200
+
+        # Turn off truncation 
+        # truncated_bptt_modulo: -1
+
+        # The batch sizes for training
+        batch_sizes:
+          training: 2
+          validation: 2
+
+        # The configs that specify early stopping
+        early_stopping_configs:
+          patience: 15
+          start_offset: 25
+          min_delta: 0
+          max_lr_change: 2
+
+        optimizer_configs:
+          type: "Adam"
+          weight_decay: 0.0
+          gradient_clip_value: 50.0
+
+        lr_scheduler_configs:
+          type: "ReduceLROnPlateau"
+          threshold: 0.001
+          # threshold: 0.005
+          factor: 0.1
+          patience: 10
+          cooldown: 4
+          min_lr: 0.0
+          verbose: True
+          start_epoch: 0
+
+        # These are the learning rates for the internal models
+        # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+        learning_rates:
+          output_bandwidth_model:     0.001
+
+        # The configs for the loss.  At minimum you need to specify the "name". 
+        # All additional configs are metric specific
+        loss_configs: 
+          name: KDENLLMetric
+
+          output_keys:
+            particles: "particles"
+            particle_weights: "particle_weights"
+            bandwidths: "bandwidths"
+
+          particle_extract_dim_params:
+            0: 
+              dim_in_kde: 0
+              kde_distribution_type: "Normal"
+            1: 
+              dim_in_kde: 1
+              kde_distribution_type: "Normal"
+            2: 
+              dim_in_kde: 2
+              kde_distribution_type: "VonMises"
+
+
+
+

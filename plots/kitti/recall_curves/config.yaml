@@ -1,0 +1,594 @@
+plot_save_basename: kitti_recall_curve_plot
+
+save_dir: "./"
+base_dir: "../../../experiments/kitti/"
+number_of_runs: 1
+
+number_of_rows: 1
+number_of_cols: 2
+
+
+x_labels:
+  0: 
+    0: Lateral Error [m]
+    1: Longitudinal Error [m]
+
+
+x_ranges:
+  0: 
+    0: [0, 15]
+    1: [0, 15]
+
+
+
+
+color_mapping:
+  mdpf: 
+      index: 0
+      alpha: 1.0
+
+  mdps:
+      index: 1
+      alpha: 1.0
+
+  orienternet_gt:
+      index: 2
+      alpha: 0.75
+
+  orienternet_actions: 
+      index: 2
+      alpha: 1.0
+
+  gauss_pf: 
+      index: 3
+      alpha: 1.0
+
+  retrieval_gt: 
+      index: 4
+      alpha: 0.75
+
+  retrieval_actions: 
+      index: 4
+      alpha: 1.0
+
+
+
+linestyle_mapping:
+  modes: "solid"
+  MAP: "densely dashed"
+
+  GT_modes: "dotted"
+  GT_MAP: "densely dashdotdotted"
+
+legend:
+
+  Mode_Legend: 
+
+    title: "Top 3 Modes:"
+    title_fontsize: 12
+
+    lines:
+      0: 
+        name: "MDPF"
+        color: mdpf
+        line_style: "modes"
+
+      1: 
+        name: "MDPS"
+        color: mdps
+        line_style: "modes"
+
+      3: 
+        name: "Dense Search (Sliding Win.)"
+        color: orienternet_actions
+        line_style: "modes"
+
+      5: 
+        name: "Retrieval (Sliding Win.)"
+        color: retrieval_actions
+        line_style: "modes"
+
+      6: 
+        name: "Retrieval (PF)"
+        color: gauss_pf
+        line_style: "modes"
+
+
+  Map_Legend: 
+
+    title: "Top Mode:"
+    title_fontsize: 12
+
+    lines:
+      0: 
+        name: "MDPF"
+        color: mdpf
+        line_style: "MAP"
+
+      1: 
+        name: "MDPS"
+        color: mdps
+        line_style: "MAP"
+
+
+      3: 
+        name: "Dense Search (Sliding Win.)"
+        color: orienternet_actions
+        line_style: "MAP"
+
+      5: 
+        name: "Retrieval (Sliding Win.)"
+        color: retrieval_actions
+        line_style: "MAP"
+
+      6: 
+        name: "Retrieval (PF)"
+        color: gauss_pf
+        line_style: "MAP"
+
+
+
+
+
+  GT_Cheat: 
+
+    title: "\"Cheating\" using GT"
+    title_fontsize: 12
+
+
+    lines:
+      2: 
+        name: "Dense Search (Top 3 Modes)    "
+        color: orienternet_gt
+        line_style: "GT_modes"
+      
+      3: 
+        name: "Dense Search (Top Mode)    "
+        color: orienternet_gt
+        line_style: "GT_MAP"
+
+      4: 
+        name: "Retrieval (Top 3 Modes)"
+        color: retrieval_gt
+        line_style: "GT_modes"
+
+
+experiments:
+
+
+#############################################################################################################################################################################################################
+#############################################################################################################################################################################################################
+## Positional Error X
+#############################################################################################################################################################################################################
+#############################################################################################################################################################################################################
+
+  ####################################################################
+  # MDPF
+  ####################################################################
+  - mdpf_forward_stratified_all_position: 
+      data_source: "save_file"
+      dir_name: "mdps_strat" 
+      # evaluation_dir_name: "005_evaluation_all" 
+      evaluation_dir_name: "003_evaluation_filters_stage_3" 
+      # evaluation_dir_name: "001_evaluation_filters_stage_1" 
+      # evaluation_dir_name: "004_5_evaluation_weights" 
+      # evaluation_dir_name: "004_evaluation_weights" 
+      display_name: "MDPF" 
+      recall_metric_name_base: "x_forward_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: "mdpf"
+      line_style: "MAP"
+
+
+  - mdpf_forward_stratified_all_modes_position: 
+      data_source: "save_file"
+      dir_name: "mdps_strat" 
+      # evaluation_dir_name: "005_evaluation_all" 
+      evaluation_dir_name: "003_evaluation_filters_stage_3" 
+      # evaluation_dir_name: "001_evaluation_filters_stage_1" 
+      # evaluation_dir_name: "004_5_evaluation_weights" 
+      # evaluation_dir_name: "004_evaluation_weights" 
+      display_name: "MDPF (Modes)" 
+      recall_metric_name_base: "x_forward_top_modes_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: "mdpf"
+      line_style: "modes"
+
+
+
+
+
+  # #####################################################################
+  # ## MDPS
+  # #####################################################################
+  - MDPS_all_position: 
+      data_source: "save_file"
+      dir_name: "mdps_strat_random_init_fixed_map_extraction" 
+      # evaluation_dir_name: "005_evaluation_all" 
+      # evaluation_dir_name: "003_evaluation_filters_stage_3" 
+      # evaluation_dir_name: "001_evaluation_filters_stage_1" 
+      evaluation_dir_name: "004_5_evaluation_weights" 
+      # evaluation_dir_name: "004_evaluation_weights" 
+      display_name: "MDPS" 
+      recall_metric_name_base: "x_mdps_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: "mdps"
+      line_style: "MAP"
+
+
+
+  - MDPS_all_modes_position: 
+      data_source: "save_file"
+      dir_name: "mdps_strat_random_init_fixed_map_extraction" 
+      # evaluation_dir_name: "005_evaluation_all" 
+      # evaluation_dir_name: "003_evaluation_filters_stage_3" 
+      # evaluation_dir_name: "001_evaluation_filters_stage_1" 
+      evaluation_dir_name: "004_5_evaluation_weights" 
+      # evaluation_dir_name: "004_evaluation_weights" 
+      display_name: "MDPS (Modes)" 
+      recall_metric_name_base: "x_mdps_top_modes_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: "mdps"
+      line_style: "modes"
+
+
+
+  #####################################################################
+  ## Orienternet GT
+  #####################################################################
+  - orienternet_position: 
+      data_source: "save_file"
+      dir_name: "orienternet" 
+      evaluation_dir_name: "001_evaluation_use_gt" 
+      display_name: "Orienternet (GT)" 
+      recall_metric_name_base: "x_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: "orienternet_gt"
+      line_style: "GT_MAP"
+
+
+  - orienternet_position: 
+      data_source: "save_file"
+      dir_name: "orienternet" 
+      evaluation_dir_name: "001_evaluation_use_gt" 
+      display_name: "Orienternet (GT, Modes)" 
+      recall_metric_name_base: "x_top_modes_position_recall"
+      row_pos: 0
+      col_pos: 0
+      color: "orienternet_gt"
+      line_style: "GT_modes"
+
+
+  #####################################################################
+  ## Orienternet Actions
+  #####################################################################
+  - orienternet_position: 
+      data_source: "save_file"
+      dir_name: "orienternet" 
+      evaluation_dir_name: "001_evaluation_actions" 
+      display_name: "Orienternet (Actions)" 
+      recall_metric_name_base: "x_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: "orienternet_actions"
+      line_style: "MAP"
+
+
+  - orienternet_position: 
+      data_source: "save_file"
+      dir_name: "orienternet" 
+      evaluation_dir_name: "001_evaluation_actions" 
+      display_name: "Orienternet (Actions, Modes)" 
+      recall_metric_name_base: "x_top_modes_position_recall"
+      row_pos: 0
+      col_pos: 0
+      color: "orienternet_actions"
+      line_style: "modes"
+
+
+  #####################################################################
+  ## Gaussian PF
+  #####################################################################
+  - pf_gauss_position: 
+      data_source: "save_file"
+      dir_name: "gaussian_dynamics_pf" 
+      evaluation_dir_name: "001_evaluation_filters" 
+      display_name: "Gauss PF" 
+      recall_metric_name_base: "x_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: "gauss_pf"
+      line_style: "MAP"
+
+
+  - pfpf_gauss__all_modes_position: 
+      data_source: "save_file"
+      dir_name: "gaussian_dynamics_pf" 
+      evaluation_dir_name: "001_evaluation_filters" 
+      display_name: "Gauss PF (Modes)" 
+      recall_metric_name_base: "x_top_modes_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: "gauss_pf"
+      line_style: "modes"
+
+
+
+
+  #####################################################################
+  ## Retrieval GT
+  #####################################################################
+  # - embedded_position: 
+  #     data_source: "save_file"
+  #     dir_name: "embedding_maps_and_images" 
+  #     evaluation_dir_name: "001_evaluation_use_gt" 
+  #     display_name: "Retrieval (GT)" 
+  #     recall_metric_name_base: "x_position_recall_"
+  #     row_pos: 0
+  #     col_pos: 0
+  #     color: "retrieval_gt"
+  #     line_style: "GT_MAP"
+
+
+  - embedded_position: 
+      data_source: "save_file"
+      dir_name: "embedding_maps_and_images" 
+      evaluation_dir_name: "001_evaluation_use_gt" 
+      display_name: "Retrieval (GT, Modes)" 
+      recall_metric_name_base: "x_top_modes_position_recall"
+      row_pos: 0
+      col_pos: 0
+      color: "retrieval_gt"
+      line_style: "GT_modes"
+
+
+  #####################################################################
+  ## Retrieval Actions
+  #####################################################################
+  - embedded_position: 
+      data_source: "save_file"
+      dir_name: "embedding_maps_and_images" 
+      evaluation_dir_name: "001_evaluation_actions" 
+      display_name: "Retrieval (Actions)" 
+      recall_metric_name_base: "x_position_recall_"
+      row_pos: 0
+      col_pos: 0
+      color: retrieval_actions
+      line_style: "MAP"
+
+
+  - embedded_position: 
+      data_source: "save_file"
+      dir_name: "embedding_maps_and_images" 
+      evaluation_dir_name: "001_evaluation_actions" 
+      display_name: "Retrieval (Actions, Modes)" 
+      recall_metric_name_base: "x_top_modes_position_recall"
+      row_pos: 0
+      col_pos: 0
+      color: retrieval_actions
+      line_style: "modes"
+
+
+
+
+
+#############################################################################################################################################################################################################
+#############################################################################################################################################################################################################
+## Positional Error Y
+#############################################################################################################################################################################################################
+#############################################################################################################################################################################################################
+
+  #####################################################################
+  ## MDPF
+  #####################################################################
+  - mdpf_forward_stratified_all_position: 
+      data_source: "save_file"
+      dir_name: "mdps_strat" 
+      # evaluation_dir_name: "005_evaluation_all" 
+      evaluation_dir_name: "003_evaluation_filters_stage_3" 
+      # evaluation_dir_name: "001_evaluation_filters_stage_1" 
+      # evaluation_dir_name: "004_5_evaluation_weights" 
+      # evaluation_dir_name: "004_evaluation_weights" 
+      display_name: "MDPF" 
+      recall_metric_name_base: "y_forward_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: "mdpf"
+      line_style: "MAP"
+
+
+  - mdpf_forward_stratified_all_position: 
+      data_source: "save_file"
+      dir_name: "mdps_strat" 
+      # evaluation_dir_name: "005_evaluation_all" 
+      evaluation_dir_name: "003_evaluation_filters_stage_3" 
+      # evaluation_dir_name: "001_evaluation_filters_stage_1" 
+      # evaluation_dir_name: "004_5_evaluation_weights" 
+      # evaluation_dir_name: "004_evaluation_weights" 
+      display_name: "MDPF" 
+      recall_metric_name_base: "y_mdps_top_modes_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: "mdpf"
+      line_style: "modes"
+
+
+
+
+  #####################################################################
+  ## MDPS
+  #####################################################################
+  - MDPS_all_position: 
+      data_source: "save_file"
+      dir_name: "mdps_strat_random_init_fixed_map_extraction" 
+      # evaluation_dir_name: "005_evaluation_all" 
+      # evaluation_dir_name: "003_evaluation_filters_stage_3" 
+      # evaluation_dir_name: "001_evaluation_filters_stage_1" 
+      evaluation_dir_name: "004_5_evaluation_weights" 
+      # evaluation_dir_name: "004_evaluation_weights" 
+      display_name: "MDPS" 
+      recall_metric_name_base: "y_mdps_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: "mdps"
+      line_style: "MAP"
+
+
+  - MDPS_all_modes_position: 
+      data_source: "save_file"
+      dir_name: "mdps_strat_random_init_fixed_map_extraction" 
+      # evaluation_dir_name: "005_evaluation_all" 
+      # evaluation_dir_name: "003_evaluation_filters_stage_3" 
+      # evaluation_dir_name: "001_evaluation_filters_stage_1" 
+      evaluation_dir_name: "004_5_evaluation_weights" 
+      # evaluation_dir_name: "004_evaluation_weights" 
+      display_name: "MDPS (Modes)" 
+      recall_metric_name_base: "y_mdps_top_modes_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: "mdps"
+      line_style: "modes"
+
+
+
+  #####################################################################
+  ## Orienternet GT
+  #####################################################################
+  - orienternet_position: 
+      data_source: "save_file"
+      dir_name: "orienternet" 
+      evaluation_dir_name: "001_evaluation_use_gt" 
+      display_name: "Orienternet (GT)" 
+      recall_metric_name_base: "y_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: "orienternet_gt"
+      line_style: "GT_MAP"
+
+
+  - orienternet_position: 
+      data_source: "save_file"
+      dir_name: "orienternet" 
+      evaluation_dir_name: "001_evaluation_use_gt" 
+      display_name: "Orienternet (GT, Modes)" 
+      recall_metric_name_base: "y_top_modes_position_recall"
+      row_pos: 0
+      col_pos: 1
+      color: "orienternet_gt"
+      line_style: "GT_modes"
+
+
+  #####################################################################
+  ## Orienternet Actions
+  #####################################################################
+  - orienternet_position: 
+      data_source: "save_file"
+      dir_name: "orienternet" 
+      evaluation_dir_name: "001_evaluation_actions" 
+      display_name: "Orienternet (Actions)" 
+      recall_metric_name_base: "y_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: "orienternet_actions"
+      line_style: "MAP"
+
+
+  - orienternet_position: 
+      data_source: "save_file"
+      dir_name: "orienternet" 
+      evaluation_dir_name: "001_evaluation_actions" 
+      display_name: "Orienternet (Actions, Modes)" 
+      recall_metric_name_base: "y_top_modes_position_recall"
+      row_pos: 0
+      col_pos: 1
+      color: "orienternet_actions"
+      line_style: "modes"
+
+
+  #####################################################################
+  ## Gaussian PF
+  #####################################################################
+
+
+  - pf_gauss_position: 
+      data_source: "save_file"
+      dir_name: "gaussian_dynamics_pf" 
+      evaluation_dir_name: "001_evaluation_filters" 
+      display_name: "Gauss PF" 
+      recall_metric_name_base: "y_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: "gauss_pf"
+      line_style: "MAP"
+
+
+  - pfpf_gauss__all_modes_position: 
+      data_source: "save_file"
+      dir_name: "gaussian_dynamics_pf" 
+      evaluation_dir_name: "001_evaluation_filters" 
+      display_name: "Gauss PF (Modes)" 
+      recall_metric_name_base: "y_top_modes_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: "gauss_pf"
+      line_style: "modes"
+
+
+  #####################################################################
+  ## Retrieval GT
+  #####################################################################
+  # - embedded_position: 
+  #     data_source: "save_file"
+  #     dir_name: "embedding_maps_and_images" 
+  #     evaluation_dir_name: "001_evaluation_use_gt" 
+  #     display_name: "Retrieval (GT)" 
+  #     recall_metric_name_base: "y_position_recall_"
+  #     row_pos: 0
+  #     col_pos: 1
+  #     color: "retrieval_gt"
+  #     line_style: "GT_MAP"
+
+
+  - embedded_position: 
+      data_source: "save_file"
+      dir_name: "embedding_maps_and_images" 
+      evaluation_dir_name: "001_evaluation_use_gt" 
+      display_name: "Retrieval (GT, Modes)" 
+      recall_metric_name_base: "y_top_modes_position_recall"
+      row_pos: 0
+      col_pos: 1
+      color: "retrieval_gt"
+      line_style: "GT_modes"
+
+
+  #####################################################################
+  ## Retrieval Actions
+  #####################################################################
+  - embedded_position: 
+      data_source: "save_file"
+      dir_name: "embedding_maps_and_images" 
+      evaluation_dir_name: "001_evaluation_actions" 
+      display_name: "Retrieval (Actions)" 
+      recall_metric_name_base: "y_position_recall_"
+      row_pos: 0
+      col_pos: 1
+      color: retrieval_actions
+      line_style: "MAP"
+
+
+  - embedded_position: 
+      data_source: "save_file"
+      dir_name: "embedding_maps_and_images" 
+      evaluation_dir_name: "001_evaluation_actions" 
+      display_name: "Retrieval (Actions, Modes)" 
+      recall_metric_name_base: "y_top_modes_position_recall"
+      row_pos: 0
+      col_pos: 1
+      color: retrieval_actions
+      line_style: "modes"
+

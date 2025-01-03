@@ -1,0 +1,28 @@
+# The location of the directory
+dataset_directory: ../../../data/MGL
+
+# The name of the splits file (in the dataset directory) that has the splits for the dataset
+splits_filename: "splits_MGL_13loc.json"
+
+# The name of the camera information file (in the dataset directory) that has the frame information
+dump_filename: "dump.json"
+
+
+split_configs:
+  short_sequence_length: 10
+  long_sequence_length: 100
+
+  # Rough percentage of the long sequences we want to use for train, val and test
+  long_sequence_splits: [0.5, 0.2, 0.3]
+
+  # Rough percentage of the short sequences we want to use for train and val (there is no test for this)
+  short_sequence_splits: [0.8, 0.2]
+
+# # Rough percentage of the dataset we want to use for train, val and test
+# dataset_splits: [0.75, .10, 0.15]
+
+# # sequence lengths we want to use for train, val and test
+# sequence_lengths: [10, 10, 100]
+
+# Where we should save the output splits to
+output_splits_save_filename: MGL_custom_splits

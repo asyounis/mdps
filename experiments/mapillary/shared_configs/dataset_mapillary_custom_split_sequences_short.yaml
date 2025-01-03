@@ -1,0 +1,56 @@
+dataset_configs:
+  dataset_name: "mapillary_custom_split"
+
+  # The location of the directory
+  dataset_directory: ../data/MGL
+  splits_filename: ../data/MGL_custom_splits/splits_data.pt
+
+  # The name of the tile file that we should load (in the dataset directory).
+  # This has the OSM frame information
+  tile_filename: tiles.pkl
+
+  # The length of the sequences to use.
+  # Valid options are "short" and "long"
+  length_name: short
+
+  # The size of the image. Note the image will be padded to be a square
+  # output_image_size: 512 # Original Form paper
+  output_image_size: 256
+
+  # Define the pixels per meter that will be used for the maps (and the BEV)
+  pixels_per_meter: 2
+
+  # If we should initialize from the GPS measurement or if we should instead use the camera to world translation vector
+  # Note this will also be used for the center of the map
+  init_from_gps: False
+
+  # The size of the map in meters 
+  # Note that the actual map size will be 2*map_crop_size_meters due to the way the map is extracted
+  local_map_crop_size_meters: 64
+
+  # The accuracy of the GPS in meters (I think meters)
+  gps_accuracy: 15
+
+  # The max amount of (uniform) noise to add to the xy position (in the map local frame) 
+  max_xy_noise: 48
+
+  # If we should return sequences or individual images
+  return_sequence: True
+
+  # Use random offsets for the map center. We only turn this off when we want sequences
+  # that look the same for rendering purposes (aka the evaluation sequences)
+  use_random_global_map_center: 
+    training: True
+    validation: True
+
+  # The size of the global map in meters
+  # Note that the actual map size will be 2*map_crop_size_meters due to the way the map is extracted
+  # Largest map in the training data (for all sequences) was 2345 meters from edge to edge so we should at least make this 2345/2
+  # Also note that this needs to be divisible by (512/2)
+  global_map_crop_size_meters: 
+    training: 400
+    validation: 400
+
+  # Action noise levels
+  action_noise_xy: 5.0
+  action_noise_yaw_degrees: 15 

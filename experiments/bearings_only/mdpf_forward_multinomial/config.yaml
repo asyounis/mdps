@@ -1,0 +1,156 @@
+
+model_architecture_files:
+  - "../experiments/bearings_only/shared_configs/models.yaml"
+
+
+model_architecture_overrides:
+  
+  main_model:
+    type: "mdpf"
+
+    # The number of particles to use
+    number_of_initial_particles: 50
+    number_of_particles: 50
+
+    # The parameters we will use for the different dimensions of the particles
+    # of the particle filter.  Here we specify what kind of distribution we wish to use
+    # for the KDE for that dimension. 
+    # Here we will also specify how to initialize each of the dimensions since sometimes 
+    # we will have unsupervised latent dimensions that need to be initialized differently 
+    # than the other variables
+    particle_dimension_parameters:
+      
+      # The x position dimension
+      0:
+        # The type of distribution we will use for all the KDE computation
+        kde_distribution_type: "Normal"
+
+        # The initialization parameters we will be using
+        initialization_parameters:
+          # The method used to initialize the particle filter particle set
+          # Options are:
+          #       - "random":  creates a random particle set via uniform sampling
+          #       - "true_state_with_small_noise":  creates the initial particle state as the true state with very little (basically 0 noise) added.
+          method: true_state_with_small_noise
+
+          # The noise standard deviation since we are using Normal
+          noise_spread: 0.01
+
+          # The parameters that specify where to get the true state value from
+          true_state_parameters: 
+
+            # The name of the variable to get the true state from
+            # Current options are:
+            #     - xy_position_global_frame_init
+            #     - yaw_init
+            variable_name: xy_position_global_frame_init
+
+            # The index from the variable name to extract the true state from
+            variable_dimenstion_index: 0
+
+
+      # The y position dimension
+      1:
+        kde_distribution_type: "Normal"
+        initialization_parameters:
+          method: true_state_with_small_noise
+          noise_spread: 0.01 
+          true_state_parameters: 
+            variable_name: xy_position_global_frame_init
+            variable_dimenstion_index: 1
+
+      # The angle dimension
+      2:
+        kde_distribution_type: "VonMises"
+        initialization_parameters:
+          method: true_state_with_small_noise
+
+          # This is the concentration since we are using the Von Mises
+          noise_spread: 100.0
+          true_state_parameters: 
+            variable_name: yaw_init
+            variable_dimenstion_index: 0
+
+
+    # The configs that setup the particle resampling method
+    particle_resampling_configs: 
+
+      # The particle selection method that we will use for particle resampling
+      # after mixing the weights with a uniform dist
+      # Options are:
+      #       - "multinomial": Select particles via Multinomial resampling
+      #       - "stratified": Select particles via Stratified resampling
+      #       - "residual": Select particles via Residual resampling
+      #       - "discrete_soft_resampling": Soft resampling
+      resampling_method: "multinomial"
+
+
+    # If we should decouple the posterior and resampling distributions
+    decouple_output_and_resampling_distributions: True
+
+    # The direction to use for the filter.
+    # This can be "forward" or "backward"
+    direction_mode: "forward"
+
+
+
+    # The names of the internal models that will be used
+    internal_model_names:
+      map_encoder_model: None
+      observation_encoder_model: observation_encoder_model
+      dynamics_model: dynamics_model
+      weights_model: filter_weights_model
+      bandwidth_model: bandwidth_model
+      bandwidth_model_resampling: bandwidth_model_resampling
+variables:
+  "<root_save_dir>": "../experiments/bearings_only/mdpf_forward_multinomial/saves/"
+  "<number_of_runs>": 11
+
+# No imports or overrides for this 
+experiments_import: []
+experiments_overrides: []
+
+# We have templates though!
+experiment_templates_import:
+    - "../experiments/bearings_only/shared_configs/experiment_templates.yaml"
+    - "../experiments/bearings_only/shared_configs/mdpf_experiment_templates.yaml"
+
+
+
+
+experiments:
+
+  - Training_Stage_1:
+
+      # If we should run this experiment or not
+      do_run: True 
+
+      # What templates to load for this experiment
+      templates_to_use: ["Training_Template", "MDPF_Training_Template_Base","MDPF_Training_Template_Stage_1"]
+
+
+  - Training_Stage_2:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Training_Template", "MDPF_Training_Template_Base","MDPF_Training_Template_Stage_2"]
+
+
+  - Evaluation_Stage_1:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "MDPF_Evaluation_Template_Base","MDPF_Evaluation_Template_Stage_1"]
+
+
+  - Evaluation_Stage_2:
+
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "MDPF_Evaluation_Template_Base","MDPF_Evaluation_Template_Stage_2"]

@@ -1,0 +1,269 @@
+model_architecture_files:
+  # - "../experiments/kitti/shared_configs/models_common.yaml"
+  - "../experiments/kitti/shared_configs/models_no_extra_dims.yaml"
+  - "../experiments/kitti/shared_configs/models_embedding_maps_and_images.yaml"
+
+
+model_architecture_overrides:
+  
+  gauss_pf_weights_model: 
+
+    # The type of this model
+    type: RetrievalForGaussianPFWeightModel
+
+    # See eqn. 2 of https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9635972&tag=1
+    obs_std: 2.0
+
+    # The particle dims to use for the translation in the x and y direction as well as
+    # the rotation when extracting local maps
+    particle_dims_to_use_for_local_map_extraction:
+      translate_x: 0
+      translate_y: 1
+      rotation: 2
+
+  main_model:
+    type: "mdpf"
+
+    # The number of particles to use
+    number_of_initial_particles: 1500
+    number_of_particles: 250
+
+    # The parameters we will use for the different dimensions of the particles
+    # of the particle filter.  Here we specify what kind of distribution we wish to use
+    # for the KDE for that dimension. 
+    # Here we will also specify how to initialize each of the dimensions since sometimes 
+    # we will have unsupervised latent dimensions that need to be initialized differently 
+    # than the other variables
+    particle_dimension_parameters:
+      
+      # The x position dimension
+      0:
+        # The type of distribution we will use for all the KDE computation
+        kde_distribution_type: "Normal"
+
+        # The initialization parameters we will be using
+        initialization_parameters:
+          # The method used to initialize the particle filter particle set
+          # Options are:
+          #       - "random":  creates a random particle set via uniform sampling
+          #       - "true_state_with_small_noise":  creates the initial particle state as the true state with very little (basically 0 noise) added.
+          method: true_state_with_small_noise
+
+          # The noise standard deviation since we are using Normal
+          noise_spread: 100.0
+
+          # The parameters that specify where to get the true state value from
+          true_state_parameters: 
+
+            # The name of the variable to get the true state from
+            # Current options are:
+            #     - xy_position_global_frame_init
+            #     - yaw_init
+            variable_name: xy_position_global_frame_init
+
+            # The index from the variable name to extract the true state from
+            variable_dimenstion_index: 0
+
+
+      # The y position dimension
+      1:
+        kde_distribution_type: "Normal"
+        initialization_parameters:
+          method: true_state_with_small_noise
+          noise_spread: 100.0
+          true_state_parameters: 
+            variable_name: xy_position_global_frame_init
+            variable_dimenstion_index: 1
+
+      # The angle dimension
+      2:
+        kde_distribution_type: "VonMises"
+        initialization_parameters:
+          method: true_state_with_small_noise
+
+          # This is the concentration since we are using the Von Mises
+          # noise_spread: 0.001 # close to 0 -> uniform
+          noise_spread: 100.0 # close to 0 -> uniform
+          true_state_parameters: 
+            variable_name: yaw_init
+            variable_dimenstion_index: 0
+
+
+
+    # The Configs to use for NMS mode finding
+    nms_mode_finding_configs: 
+
+      # The axis of h
+      nms_thresholds: [10,10, 0.52359787756]
+
+      # The number of modes to select
+      number_of_modes: 3
+
+      # The number of samples to draw when selecting the modes
+      number_of_samples_to_draw: 10000
+
+      # We are not using a KDE so be discrete
+      treat_posterior_as_discrete: True
+
+    # The configs that setup the particle resampling method
+    particle_resampling_configs: 
+
+      # The particle selection method that we will use for particle resampling
+      resampling_method: "discrete_resampling"
+
+      # The particle selection method that we will use for particle resampling
+      # after mixing the weights with a uniform dist
+      # Options are:
+      #       - "multinomial": Select particles via Multinomial resampling
+      #       - "stratified": Select particles via Stratified resampling
+      #       - "residual": Select particles via Residual resampling
+      #       - "discrete_soft_resampling": Soft resampling
+      resampling_method: "stratified"
+
+    # If we should decouple the posterior and resampling distributions
+    decouple_output_and_resampling_distributions: True
+
+    # The direction to use for the filter.
+    # This can be "forward" or "backward"
+    direction_mode: "forward"
+
+    # The names of the internal models that will be used
+    internal_model_names:
+      map_encoder_model: map_encoder_model
+      observation_encoder_model: observation_encoder_model
+      dynamics_model: gaussian_dynamics_model
+      weights_model: gauss_pf_weights_model
+      # weights_model: filter_weights_model
+      bandwidth_model: bandwidth_model
+      bandwidth_model_resampling: bandwidth_model_resampling
+
+variables:
+  "<root_save_dir>": "../experiments/kitti/gaussian_dynamics_pf/saves/"
+  "<embedding_maps_and_images_load_dir>": "../experiments/kitti/embedding_maps_and_images/saves/001_training/run_0000/models/best/"
+  "<number_of_runs>": 1
+
+experiments_import: []
+
+
+# We have templates though!
+experiment_templates_import:
+    - "../experiments/kitti/shared_configs/experiment_templates.yaml"
+    - "../experiments/kitti/shared_configs/mdpf_experiment_templates.yaml"
+
+
+experiments:
+
+
+  # - Training:
+
+  #     # If we should run this experiment or not
+  #     do_run: False
+
+  #     # What templates to load for this experiment
+  #     templates_to_use: ["Training_Template"]
+
+  #     # The parameters for the device to use
+  #     # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+  #     device_configs:
+  #       # device: "cuda_auto_multi:1"
+  #       device: "cuda_use_all"
+  #       min_free_memory_gb: 1.0
+  #       max_number_of_tasks: 10
+
+  #     dataset_configs_file: "../experiments/kitti/shared_configs/dataset_kitti_sequences_long.yaml"
+
+  #     # Specify which model to load
+  #     # We want to load from the kitti saved files
+  #     pretrained_models:
+  #       observation_encoder_model: <orienternet_load_dir>observation_encoder_model.pt
+  #       map_encoder_model: <orienternet_load_dir>map_encoder.pt
+
+  #     # The save dir
+  #     save_dir: <root_save_dir>/001_training/
+
+  #     # Specify the configs needed for training
+  #     training_configs:       
+
+  #       # These are the learning rates for the internal models
+  #       # If you want to use 1 learnung rate for all the models you can set "full_model" but then there can be no other entries
+  #       learning_rates:
+  #         map_encoder_model:            "Freeze"
+  #         observation_encoder_model:    "Freeze"
+  #         dynamics_model:               "Freeze"
+  #         output_weights_model:         "Freeze"
+  #         resampling_weights_model:     "Freeze"
+  #         resampling_bandwidth_model:   "Freeze"
+  #         output_bandwidth_model:       0.0001
+
+  #       models_with_disabled_gradients:
+  #         - map_encoder_model
+  #         - observation_encoder_model
+  #         - dynamics_model
+  #         - output_weights_model
+  #         - resampling_weights_model
+  #         - resampling_bandwidth_model
+
+  #       # Only train for 20 epochs.  This should be more than enough
+  #       # Honestly 1 is probably enough but lets go longer
+  #       epochs: 20
+
+  #       # The batch sizes for training per GPU
+  #       # This will automatically scale the batch size when we scale the number of GPUs
+  #       batch_sizes_per_gpu:
+  #         training: 2
+  #         validation: 2
+
+  #       # The number of CPUS we will use for data loading
+  #       num_cpu_cores_for_dataloader: 16
+
+  #       # Turn off check-pointing because it generates too much data
+  #       # and this model runs fast so it doesnt matter too much
+  #       do_checkpointing: False 
+
+  #       # The configs for the loss.  At minimum you need to specify the "name". 
+  #       # All additional configs are metric specific
+  #       loss_configs:
+  #         name: KDENLLMetric
+  #         output_keys:
+  #           particles: "particles"
+  #           particle_weights: "particle_weights"
+  #           bandwidths: "bandwidths"
+
+  #         particle_extract_dim_params:
+  #           0: 
+  #             dim_in_kde: 0
+  #             kde_distribution_type: "Normal"
+  #           1: 
+  #             dim_in_kde: 1
+  #             kde_distribution_type: "Normal"
+  #           2: 
+  #             dim_in_kde: 2
+  #             kde_distribution_type: "VonMises"
+
+
+
+  - Evaluation:
+    
+      # If we should run this experiment or not
+      do_run: True
+
+      # What templates to load for this experiment
+      templates_to_use: ["Evaluation_Template", "MDPF_Evaluation_Template"]
+
+      # The parameters for the device to use
+      # This specifies which GPU or how many GPUs we want and also what the requirements are for the GPU
+      device_configs:
+        # device: "cuda_auto_multi:1"
+        device: "cuda_use_all"
+        min_free_memory_gb: 1.0
+        max_number_of_tasks: 10
+
+      # # What Models to load
+      # pretrained_models:
+      #   full_model: <root_save_dir>/001_training/<framework_var_run_number>/models/best/full_model.pt
+
+      # Specify which model to load
+      # We want to load from the kitti saved files
+      pretrained_models:
+        observation_encoder_model: <embedding_maps_and_images_load_dir>/observation_encoder_model.pt
+        map_encoder_model: <embedding_maps_and_images_load_dir>/map_encoder_model.pt
