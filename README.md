@@ -16,7 +16,7 @@
 <p align="center">
     <a href="https://asyounis.github.io/mdps/"><img src="assets/images/cover.png" alt="cover_img" width="100%"></a>
     <br>
-    <em>Mixture Density Particles Smoother is an end-to-end differentiable particle smoother which uses learned dynamics and measurement models (neural networks), trained end-to-end within the particle smoother algorithm.
+    <em>Mixture Density Particles Smoother is an end-to-end differentiable particle smoother which uses learned dynamics and measurement models (neural networks), trained end-to-end within the particle smoother algorithm. </em>
 </p>
 
 This repository hosts the source code for "Learning to be Smooth: An End-to-End Differentiable Particle Smoother" which introduces Mixture Density Particle Smoothers (MDPS).  MDPS leverages the power of deep learning within a novel end-to-end differentiable particle smoothing algorithm to yield a superior state estimation system that maintains multiple modes in uncertain settings. This repo applies the MDPS to the simple bearings only task as well as the complex task of global localization within city scale environments.
