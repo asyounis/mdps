@@ -51,6 +51,11 @@ do_legacy_pano_offset": False,
 ```
 3. Use the instructions from [Orienternet](https://github.com/facebookresearch/OrienterNet) to download the Mapillary Geo-Location dataset.
 4. Place the downloaded downloaded dataset in `./data/MGL/`.
+5. Download and unpack dataset split files
+```
+./download_MGL_splits.bash
+
+```
 
 #### Kitti
 Use the instructions from [Orienternet](https://github.com/facebookresearch/OrienterNet) to download the KITTI dataset and then place the downloaded dataset in `./data/kitti/`.
