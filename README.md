@@ -40,7 +40,20 @@ Bearings only dataset is a synthetic dataset that is created when any of the bea
 
 #### Mapillary Geo-Location
 
+1. Clone the [Orienternet](https://github.com/facebookresearch/OrienterNet) repository
+2. Change line 137 of `Orienternet/maploc/data/mapillaty/prepare.py` from `True` to `False`
+```
+# Delete
+do_legacy_pano_offset": True
+
+# Replace with
+do_legacy_pano_offset": False,
+```
+3. Use the instructions from [Orienternet](https://github.com/facebookresearch/OrienterNet) to download the Mapillary Geo-Location dataset.
+4. Place the downloaded downloaded dataset in `./data/MGL/`.
+
 #### Kitti
+Use the instructions from [Orienternet](https://github.com/facebookresearch/OrienterNet) to download the KITTI dataset and then place the downloaded dataset in `./data/kitti/`.
 
 
 ## Training And Evaluation
@@ -68,6 +81,12 @@ Below is a mapping between the name of each method used in the paper and the dir
 | FFBS (Multinomial)         | traditional_FFBS                                       |
 | MDPS (Stratified)          | mdps_strat                                             |
 
+
+To run training and evaluation:
+```
+cd ./experiments/bearings_only/<experiment_name>
+./run.bash
+```
 #### Mapillary Geo-Location
 
 Below is a mapping between the name of each method used in the paper and the directory in which the config file and run script are placed.
@@ -78,6 +97,12 @@ Below is a mapping between the name of each method used in the paper and the dir
 | Dense Search             | orienternet                                   |
 | Retrieval (Sliding Win.) | embedding_maps_and_images                     |
 | Retrieval (PF)           | gaussian_dynamics_pf                          |
+
+To run training and evaluation:
+```
+cd ./experiments/mapillary/<experiment_name>
+./run.bash
+```
 
 #### KITTI
 **Note: KITTI uses the output of the Mapillary training as a starting point and you must first run the Mapillary experiments**
@@ -91,10 +116,35 @@ Below is a mapping between the name of each method used in the paper and the dir
 | Retrieval (Sliding Win.) | embedding_maps_and_images                     |
 | Retrieval (PF)           | gaussian_dynamics_pf                          |
 
+
+To run training and evaluation:
+```
+cd ./experiments/kitti/<experiment_name>
+./run.bash
+```
+
 ## Plotting
-We provide the plotting tools for plotting
+We provide the plotting tools for plotting the experiment results after running the training and evaluation.
+Plotting tools are located in `./plots`.  Simply navigate to the directory of the plot you wish to generate and use the run script:
 
+```
+# Generate Bearings only box plots
+cd ./plots/bearings_only/box_plots
+./run.bash
 
+# Generate Mapillary recall curves
+cd ./plots/mapillary/recall_curves
+./run.bash
+
+# Generate Mapillary example trajectory images for MDPF/MDPS
+# Note you will have to change the experiment being plotted by editing line 535 in main.py within "./plots/mapillary/plot_sequences"
+cd ./plots/mapillary/plot_sequences
+./run.bash
+
+# Generate KITTI recall curves
+cd ./plots/kitti/recall_curves
+./run.bash
+```
 
 ## BibTex citation
 Please consider citing our work if you use any code from this repo or ideas presented in the paper:
