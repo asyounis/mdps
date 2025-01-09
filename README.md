@@ -5,7 +5,7 @@
     ·
     <a href="https://ics.uci.edu/~sudderth/">Erik&nbsp;Sudderth</a>
   </p>
-  <h2 align="center">Neurips 2024</h2>
+  <h2 align="center">NeurIPS 2024</h2>
   <h3 align="center">
     <a href="tbd">Paper</a> 
     | <a href="https://asyounis.github.io/mdps/">Project Page</a>
@@ -157,7 +157,7 @@ Please consider citing our work if you use any code from this repo or ideas pres
 @inproceedings{younis2024mdps,
       author    = {Younis, Ali and Sudderth, Erik},
       title     = {Learning to be Smooth: An End-to-End Differentiable Particle Smoother},
-      booktitle = {Neurips},
+      booktitle = {NeurIPS},
       year      = {2024},
 }
 ```
