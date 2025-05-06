@@ -7,7 +7,7 @@
   </p>
   <h2 align="center">NeurIPS 2024</h2>
   <h3 align="center">
-    <a href="tbd">Paper</a> 
+    <a href="https://asyounis.github.io/assets/neurips_2024_paper/paper.pdf">Paper</a> 
     | <a href="https://asyounis.github.io/mdps/">Project Page</a>
     | <a href="https://neurips.cc/virtual/2024/poster/94821">Video</a>
   </h3>
